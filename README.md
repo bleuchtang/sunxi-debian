@@ -32,6 +32,16 @@ TODO
 
 # Install on a sdcard
 
+## Partitioning
+
+```shell
+parted -s /dev/sdb mklabel msdos
+parted -a optimal /dev/sdb mkpart primary fat32 1 16MiB
+parted -a optimal /dev/sdb mkpart primary fat32 16MiB 100%
+mkfs.fat -F 32 /dev/sdb1
+mkfs.ext4  /dev/sdb2
+```
+
 TODO
 
 # Some links:
