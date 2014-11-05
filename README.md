@@ -10,8 +10,8 @@ quick bootstrap.
 
 ```shell
 sudo docker pull debian:stable
-git clone https://github.com/bleuchtang/olinux-lime2
-cd olinux-lime2 && sudo docker build -t debian/olinux .
+git clone https://github.com/bleuchtang/olinuxino-a20-lime2
+cd olinuxino-a20-lime2 && sudo docker build -t debian/olinux .
 ```
 
 # Build minimal arm debootstrap
