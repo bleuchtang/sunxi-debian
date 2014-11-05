@@ -1,4 +1,4 @@
-olinux-lime2
+olinux-a20-lime2
 ==========
 
 Bootstrap a minimal debian for olinuxino-a20-lime2
@@ -46,7 +46,7 @@ TODO
 
 # Some links:
 
-## You probably want to Build your own docker image;
+## You probably want to Build your own docker image
 
 - Because it's quick and easy; tutorial [here](http://www.aossama.com/build-debian-docker-image-from-scratch/)
 - Because you shoudn't trust regitry images; demonstration [here](https://joeyh.name/blog/entry/docker_run_debian/) 
