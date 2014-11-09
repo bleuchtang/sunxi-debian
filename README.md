@@ -24,25 +24,39 @@ issue](https://github.com/docker/docker/issues/1916)
 sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian/olinux sh ./olinux/create_arm_debootstrap.sh
 ```
 
-You shoud have both debootstrap and u-boot-sunxi directories in olinux/
-
-# Boot
-
-TODO
+You shoud have both debootstrap and sunxi directories in olinux/
 
 # Install on a sdcard
 
 ## Partitioning
 
 ```shell
-parted -s /dev/sdb mklabel msdos
-parted -a optimal /dev/sdb mkpart primary fat32 1 16MiB
-parted -a optimal /dev/sdb mkpart primary fat32 16MiB 100%
-mkfs.fat -F 32 /dev/sdb1
-mkfs.ext4  /dev/sdb2
+mmc=/dev/sdc
+parted -s ${mmc} mklabel msdos
+parted -a optimal ${mmc} mkpart primary fat32 1 16MiB
+parted -a optimal ${mmc} mkpart primary fat32 16MiB 100%
+mkfs.fat -F 32 ${mmc}1
+mkfs.ext4 ${mmc}2
 ```
 
-TODO
+## Installation
+
+```shell
+dd if=olinux/sunxi/u-boot-sunxi/u-boot-sunxi-with-spl.bin of=${mmc} bs=1024 seek=8
+mount ${mmc}1 /media/usb/
+cp olinux/sunxi/script.bin /media/usb/
+cp olinux/sunxi/linux-sunxi/arch/arm/boot/uImage /media/usb/
+umount /media/usb
+mount ${mmc}2 /media/usb/
+cp -r olinux/debootstrap/* /media/usb/
+sync
+rm -rf /media/usb/lib/firmware/
+cp -rfv olinux/sunxi/linux-sunxi/out/lib/firmware/ /media/usb/lib/
+sync
+rm -rf /media/usb/lib/modules/
+cp -rfv olinux/sunxi/linux-sunxi/out/lib/modules/* /media/usb/lib/modules
+sync
+```
 
 # Some links:
 
