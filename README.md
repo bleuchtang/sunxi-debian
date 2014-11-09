@@ -26,7 +26,7 @@ sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian/olinux sh .
 
 You shoud have both debootstrap and sunxi directories in olinux/
 
-# Install on a sdcard
+# Install on a sd card
 
 ## Partitioning
 
@@ -57,6 +57,10 @@ rm -rf /media/usb/lib/modules/
 cp -rfv olinux/sunxi/linux-sunxi/out/lib/modules/* /media/usb/lib/modules
 sync
 ```
+
+# TODO
+
+- change _Install on a sd card_ to a script ?
 
 # Some links:
 
