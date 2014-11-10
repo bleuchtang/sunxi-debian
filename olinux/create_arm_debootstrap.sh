@@ -11,6 +11,7 @@ rm -rf $targetdir && mkdir -p $targetdir
 # install packages for debootstap
 apt-get install --force-yes -y debootstrap dpkg-dev qemu binfmt-support qemu-user-static dpkg-cross
 
+update-binfmts --disable
 mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
 update-binfmts --enable
 
