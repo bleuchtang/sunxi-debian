@@ -58,8 +58,8 @@ sync
 rm -rf /media/usb/lib/firmware/
 cp -rfv olinux/sunxi/linux-sunxi/out/lib/firmware/ /media/usb/lib/
 sync
-rm -rf /media/usb/lib/modules/
-cp -rfv olinux/sunxi/linux-sunxi/out/lib/modules/* /media/usb/lib/modules
+rm -rf /media/usb/lib/modules/*
+cp -rfv olinux/sunxi/linux-sunxi/out/lib/modules/* /media/usb/lib/modules/
 sync
 ```
 
