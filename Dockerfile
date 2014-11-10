@@ -13,7 +13,7 @@ RUN apt-get update
 RUN apt-get install --force-yes -y emdebian-archive-keyring
 RUN apt-get update
 
-RUN apt-get install --force-yes -y gcc-4.7-arm-linux-gnueabihf ncurses-dev uboot-mkimage build-essential git vim libusb-1.0-0-dev 
+RUN apt-get install --force-yes -y gcc-4.7-arm-linux-gnueabihf ncurses-dev uboot-mkimage build-essential git vim libusb-1.0-0-dev pkg-config 
 
 RUN ln -s /usr/bin/arm-linux-gnueabihf-gcc-4.7 /usr/bin/arm-linux-gnueabihf-gcc
 #RUN mkdir -p /olinux
