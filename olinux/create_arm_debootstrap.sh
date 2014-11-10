@@ -34,7 +34,7 @@ chroot $targetdir apt-get update
 chroot $targetdir apt-get install -y --force-yes openssh-server ntp
 
 # Use dhcp on boot
-echo <<EOT > $targetdir/etc/network/interfaces
+cat <<EOT > $targetdir/etc/network/interfaces
 auto lo
 iface lo inet loopback
 
