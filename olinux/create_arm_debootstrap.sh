@@ -45,6 +45,9 @@ EOT
 # Configure tty
 echo T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100 >> $targetdir/etc/inittab
 
+# add 'olimex' for root password
+sed -i -e 's/root:*/root:$6$v2fipCZGPn5zM$e8M9brX2KCx.NoyCiGnJt5iCDnZ\/8.ZFT.MBbcuiBDzKZw6kMckF7HeQX1htrBSPqihg1ml\/CO5e5r97d2Ul61/' $targetdir/etc/shadow
+
 # Remove useless files
 chroot $targetdir apt-get clean
 rm $targetdir/etc/resolv.conf
