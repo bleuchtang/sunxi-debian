@@ -6,7 +6,7 @@ Bootstrap a minimal debian for olinuxino-a20-lime2
 Thanks to [lukas2511](https://github.com/lukas2511/olinuxino-a20-micro) for
 quick bootstrap.
 
-# Build minimal U-boot
+# Build docker image
 
 ```shell
 sudo docker pull debian:stable
@@ -24,7 +24,12 @@ issue](https://github.com/docker/docker/issues/1916)
 sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian/olinux sh ./olinux/create_arm_debootstrap.sh
 ```
 
+# Build sunxi kernel and boot files
+
 You shoud have both debootstrap and sunxi directories in olinux/
+```shell
+sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian/olinux sh ./olinux/create_sunxi_boot_files.sh
+```
 
 # Install on a sd card
 
