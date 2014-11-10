@@ -35,5 +35,4 @@ fi
 
 cd /olinux/sunxi/sunxi-tools/ && make
 cd /olinux/sunxi/ && ./sunxi-tools/fex2bin ../script.fex script.bin 
-cd /olinux/sunxi/ && chown +x script.bin 
-
+cd /olinux/sunxi/ && chmod +x script.bin 
