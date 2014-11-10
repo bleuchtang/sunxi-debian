@@ -16,7 +16,7 @@ cd olinuxino-a20-lime2 && sudo docker build -t debian/olinux .
 
 # Build minimal arm debootstrap
 
-We cannot perform a debootstrap in dockerfile bacause dockerfile doesn't accept
+We cannot perform a debootstrap in dockerfile because dockerfile doesn't accept
 privileged mode. For more details see [docker
 issue](https://github.com/docker/docker/issues/1916) 
 
