@@ -47,6 +47,7 @@ mkfs.ext4 ${mmc}2
 ## Installation
 
 ```shell
+mkdir -p /media/usb
 dd if=olinux/sunxi/u-boot-sunxi/u-boot-sunxi-with-spl.bin of=${mmc} bs=1024 seek=8
 mount ${mmc}1 /media/usb/
 cp olinux/sunxi/script.bin /media/usb/
@@ -56,11 +57,12 @@ mount ${mmc}2 /media/usb/
 cp -r olinux/debootstrap/* /media/usb/
 sync
 rm -rf /media/usb/lib/firmware/
-cp -rfv olinux/sunxi/linux-sunxi/out/lib/firmware/ /media/usb/lib/
+cp -rf olinux/sunxi/linux-sunxi/out/lib/firmware/ /media/usb/lib/
 sync
-rm -rf /media/usb/lib/modules/*
-cp -rfv olinux/sunxi/linux-sunxi/out/lib/modules/* /media/usb/lib/modules/
+rm -rf /media/usb/lib/modules/
+cp -rf olinux/sunxi/linux-sunxi/out/lib/modules/ /media/usb/lib/
 sync
+umount /media/usb
 ```
 
 # TODO
