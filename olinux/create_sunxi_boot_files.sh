@@ -5,13 +5,21 @@
 ######################
 
 # Sunxi u-boot
-if [ -d /olinux/sunxi/u-boot-sunxi/ ] ; then 
-  cd /olinux/sunxi/u-boot-sunxi/ && make clean && git pull 
+#if [ -d /olinux/sunxi/u-boot-sunxi/ ] ; then 
+#  cd /olinux/sunxi/u-boot-sunxi/ && make clean && git pull 
+#else
+#  git clone -b sunxi https://github.com/linux-sunxi/u-boot-sunxi.git /olinux/sunxi/u-boot-sunxi
+#fi
+#
+#cd /olinux/sunxi/u-boot-sunxi && make CROSS_COMPILE=arm-linux-gnueabihf A20-OLinuXino-Lime_config && make CROSS_COMPILE=arm-linux-gnueabihf-
+
+if [ -d /olinux/sunxi/u-boot/ ] ; then 
+  cd /olinux/sunxi/u-boot/ && make clean && git pull 
 else
-  git clone -b sunxi https://github.com/linux-sunxi/u-boot-sunxi.git /olinux/sunxi/u-boot-sunxi
+  git clone git://git.denx.de/u-boot.git 
 fi
 
-cd /olinux/sunxi/u-boot-sunxi && make CROSS_COMPILE=arm-linux-gnueabihf A20-OLinuXino-Lime_config && make CROSS_COMPILE=arm-linux-gnueabihf-
+cd /olinux/sunxi/u-boot && make CROSS_COMPILE=arm-linux-gnueabihf A20-OLinuXino-Lime_config && make CROSS_COMPILE=arm-linux-gnueabihf-
 
 # Sunxi kernel
 if [ -d /olinux/sunxi/linux-sunxi/ ] ; then 
