@@ -52,6 +52,7 @@ dd if=olinux/sunxi/u-boot-sunxi/u-boot-sunxi-with-spl.bin of=${mmc} bs=1024 seek
 mount ${mmc}1 /media/usb/
 cp olinux/sunxi/script.bin /media/usb/
 cp olinux/sunxi/linux-sunxi/arch/arm/boot/uImage /media/usb/
+cp olinux/sunxi/uEnv.txt /media/usb/
 umount /media/usb
 mount ${mmc}2 /media/usb/
 cp -r olinux/debootstrap/* /media/usb/
