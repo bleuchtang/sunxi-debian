@@ -16,10 +16,17 @@
 if [ -d /olinux/sunxi/u-boot/ ] ; then 
   cd /olinux/sunxi/u-boot/ && make clean && git pull 
 else
-  git clone git://git.denx.de/u-boot.git 
+  git clone git://git.denx.de/u-boot.git /olinux/sunxi/u-boot
 fi
 
 cd /olinux/sunxi/u-boot && make CROSS_COMPILE=arm-linux-gnueabihf A20-OLinuXino-Lime_config && make CROSS_COMPILE=arm-linux-gnueabihf-
+
+if [ -d /olinux/sunxi/sunxi-board/ ] ; then 
+  cd /olinux/sunxi/board/ && make clean && git pull 
+else
+  git clone https://github.com/linux-sunxi/sunxi-boards /olinux/sunxi/sunxi-board/
+fi
+
 
 # Sunxi kernel
 if [ -d /olinux/sunxi/linux-sunxi/ ] ; then 
@@ -42,5 +49,5 @@ else
 fi
 
 cd /olinux/sunxi/sunxi-tools/ && make
-cd /olinux/sunxi/ && ./sunxi-tools/fex2bin ../script.fex script.bin 
+cd /olinux/sunxi/ && ./sunxi-tools/fex2bin ../sunxi-board/sys_config/a20/a20-olinuxino_lime2.fex script.bin 
 cd /olinux/sunxi/ && chmod +x script.bin 
