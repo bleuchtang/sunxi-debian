@@ -13,6 +13,15 @@
 #
 #cd /olinux/sunxi/u-boot-sunxi && make CROSS_COMPILE=arm-linux-gnueabihf A20-OLinuXino-Lime_config && make CROSS_COMPILE=arm-linux-gnueabihf-
 
+clone_or_pull (){
+  repo=$1
+  if [ -d /olinux/sunxi/$repo/ ] ; then 
+    cd /olinux/sunxi/$repo/ && make clean && git pull 
+  else
+    git clone https://github.com/linux-sunxi/$repo /olinux/sunxi/$repo/
+  fi
+}
+
 if [ -d /olinux/sunxi/u-boot/ ] ; then 
   cd /olinux/sunxi/u-boot/ && make clean && git pull 
 else
@@ -21,32 +30,18 @@ fi
 
 cd /olinux/sunxi/u-boot && make CROSS_COMPILE=arm-linux-gnueabihf A20-OLinuXino-Lime_config && make CROSS_COMPILE=arm-linux-gnueabihf-
 
-if [ -d /olinux/sunxi/sunxi-board/ ] ; then 
-  cd /olinux/sunxi/board/ && make clean && git pull 
-else
-  git clone https://github.com/linux-sunxi/sunxi-boards /olinux/sunxi/sunxi-board/
-fi
-
-
 # Sunxi kernel
-if [ -d /olinux/sunxi/linux-sunxi/ ] ; then 
-  cd /olinux/sunxi/linux-sunxi/ && make clean && git pull 
-else
-  git clone https://github.com/linux-sunxi/linux-sunxi -b stage/sunxi-3.4 /olinux/sunxi/linux-sunxi
-fi
+clone_or_pull linux-sunxi
+# Sunxi board configs
+clone_or_pull sunxi-boards
+# Sunxi tools 
+clone_or_pull sunxi-tools
 
 cp /olinux/a20_defconfig /olinux/sunxi/linux-sunxi/arch/arm/configs/.
 cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm a20_defconfig
 cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j2 uImage  
 cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j2 INSTALL_MOD_PATH=out modules
 cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j2 INSTALL_MOD_PATH=out modules_install
-
-# Sunxi fex2bin
-if [ -d /olinux/sunxi/sunxi-tools/ ] ; then 
-  cd /olinux/sunxi/sunxi-tools/ && make clean && git pull 
-else
- git clone https://github.com/linux-sunxi/sunxi-tools /olinux/sunxi/sunxi-tools 
-fi
 
 cd /olinux/sunxi/sunxi-tools/ && make
 cd /olinux/sunxi/ && ./sunxi-tools/fex2bin ../sunxi-board/sys_config/a20/a20-olinuxino_lime2.fex script.bin 
