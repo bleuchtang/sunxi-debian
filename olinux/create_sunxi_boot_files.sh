@@ -44,5 +44,5 @@ cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf
 cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j2 INSTALL_MOD_PATH=out modules_install
 
 cd /olinux/sunxi/sunxi-tools/ && make
-cd /olinux/sunxi/ && ./sunxi-tools/fex2bin sunxi-boards/sys_config/a20/a20-olinuxino_lime2.fex script.bin
+cd /olinux/sunxi/ && rm -f script.bin && ./sunxi-tools/fex2bin sunxi-boards/sys_config/a20/a20-olinuxino_lime2.fex script.bin
 cd /olinux/sunxi/ && chmod +x script.bin 
