@@ -89,6 +89,7 @@ modules build with sunxi kernel.
 mount ${mmc}2 /media/usb/
 cp -r olinux/debootstrap/* /media/usb/
 sync
+chmod 1777 /media/usb/tmp/
 rm -rf /media/usb/lib/firmware/
 cp -rf olinux/sunxi/linux-sunxi/out/lib/firmware/ /media/usb/lib/
 sync
@@ -96,6 +97,14 @@ rm -rf /media/usb/lib/modules/
 cp -rf olinux/sunxi/linux-sunxi/out/lib/modules/ /media/usb/lib/
 sync
 umount /media/usb
+```
+
+Default root password is _olinux_. After first connection on you box run depmod
+to build moddep file.
+
+```shell
+ssh root@mybox
+depmod -a
 ```
 
 That's it ! 
