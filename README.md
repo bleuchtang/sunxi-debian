@@ -99,8 +99,9 @@ sync
 umount /media/usb
 ```
 
-Default root password is _olinux_. After first connection on you box run depmod
-to build moddep file.
+You can now connect to your box via ssh. Default root password is _olinux_.
+After your first connection on you box you should run depmod to build moddep
+file.
 
 ```shell
 ssh root@mybox
