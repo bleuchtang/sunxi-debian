@@ -31,12 +31,17 @@ You shoud have both debootstrap and sunxi directories in olinux/
 sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian/olinux sh ./olinux/create_sunxi_boot_files.sh
 ```
 
-# Install on a sd card
+# Install on a SD card
+
+## Setup SD card device
+
+```shell
+mmc=/dev/sdc
+```
 
 ## Partitioning
 
 ```shell
-mmc=/dev/sdc
 parted -s ${mmc} mklabel msdos
 parted -a optimal ${mmc} mkpart primary fat32 1 16MiB
 parted -a optimal ${mmc} mkpart primary fat32 16MiB 100%
@@ -46,14 +51,29 @@ mkfs.ext4 ${mmc}2
 
 ## Installation
 
+
+### Boot partition
+
 ```shell
 mkdir -p /media/usb
 dd if=olinux/sunxi/u-boot-sunxi/u-boot-sunxi-with-spl.bin of=${mmc} bs=1024 seek=8
 mount ${mmc}1 /media/usb/
 cp olinux/sunxi/script.bin /media/usb/
 cp olinux/sunxi/linux-sunxi/arch/arm/boot/uImage /media/usb/
+```
+
+If you want to do a server without graphical session, you can disable allocated
+ram for graphical card. To do that copy uEnv.txt; This file add custom kernel
+parameters to save 32MB of ram.
+
+```shell
 cp olinux/sunxi/uEnv.txt /media/usb/
 umount /media/usb
+```
+
+### Root partition
+
+```shell
 mount ${mmc}2 /media/usb/
 cp -r olinux/debootstrap/* /media/usb/
 sync
@@ -68,7 +88,7 @@ umount /media/usb
 
 # TODO
 
-- change _Install on a sd card_ to a script ?
+- change _Install on a SD card_ to a script ?
 
 # Some links:
 
