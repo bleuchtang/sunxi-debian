@@ -11,7 +11,7 @@ quick bootstrap.
 ```shell
 sudo docker pull debian:stable
 git clone https://github.com/bleuchtang/olinuxino-a20-lime2
-cd olinuxino-a20-lime2 && sudo docker build -t debian/olinux .
+cd olinuxino-a20-lime2 && sudo docker build -t debian:olinux .
 ```
 
 # Build minimal arm debootstrap
@@ -21,14 +21,14 @@ privileged mode. For more details see [docker
 issue](https://github.com/docker/docker/issues/1916) 
 
 ```shell
-sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian/olinux sh ./olinux/create_arm_debootstrap.sh
+sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux sh ./olinux/create_arm_debootstrap.sh
 ```
 
 # Build sunxi kernel and boot files
 
 You shoud have both debootstrap and sunxi directories in olinux/
 ```shell
-sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian/olinux sh ./olinux/create_sunxi_boot_files.sh
+sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux sh ./olinux/create_sunxi_boot_files.sh
 ```
 
 # Install on a SD card
