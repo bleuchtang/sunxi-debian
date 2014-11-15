@@ -1,7 +1,7 @@
-olinux-a20-lime2
+olinux-a20-lime
 ==========
 
-Bootstrap a minimal debian for olinuxino-a20-lime2
+Bootstrap a minimal debian for olinuxino-a20-lime
 
 Thanks to [lukas2511](https://github.com/lukas2511/olinuxino-a20-micro) for
 quick bootstrap.
