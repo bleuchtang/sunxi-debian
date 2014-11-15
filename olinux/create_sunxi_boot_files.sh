@@ -38,5 +38,5 @@ clone_or_pull sunxi-boards https://github.com/linux-sunxi
 # Sunxi tools 
 clone_or_pull sunxi-tools https://github.com/linux-sunxi
 cd /olinux/sunxi/sunxi-tools/ && make
-cd /olinux/sunxi/ && rm -f script.bin && ./sunxi-tools/fex2bin sunxi-boards/sys_config/a20/a20-olinuxino_lime2.fex script.bin
+cd /olinux/sunxi/ && rm -f script.bin && ./sunxi-tools/fex2bin sunxi-boards/sys_config/a20/a20-olinuxino_lime.fex script.bin
 cd /olinux/sunxi/ && chmod +x script.bin 
