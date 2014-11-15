@@ -76,7 +76,7 @@ kernel parameters to save 32MB of ram. If you want to use the graphical card;
 don't copy uEnv.txt file.
 
 ```shell
-cp olinux/sunxi/uEnv.txt /media/usb/
+cp olinux/uEnv.txt /media/usb/
 umount /media/usb
 ```
 
@@ -108,7 +108,8 @@ ssh root@mybox
 depmod -a
 ```
 
-That's it ! 
+That's it ! Now you probably doesn't want do more system administration for
+your home server so get an eye on [yunohost](https://yunohost.org/#/) ;)
 
 # TODO
 
