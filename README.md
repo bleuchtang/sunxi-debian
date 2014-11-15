@@ -11,7 +11,7 @@ quick bootstrap.
 ```shell
 sudo docker pull debian:stable
 git clone https://github.com/bleuchtang/olinuxino-a20-lime
-cd olinuxino-a20-lime2 && sudo docker build -t debian:olinux .
+cd olinuxino-a20-lime && sudo docker build -t debian:olinux .
 ```
 
 # Build minimal arm debootstrap
