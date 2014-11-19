@@ -13,7 +13,8 @@ cat <<EOF
 # OPTIONS
 
   -d		debian release (wheezy, jessie) 	(default: wheezy)
-  -a		add packages
+  -a		add packages (wheezy)
+  -n		name					(default: olinux)
 
 EOF
 exit 1
