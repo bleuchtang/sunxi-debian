@@ -27,12 +27,21 @@ issue](https://github.com/docker/docker/issues/1916)
 sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux sh ./olinux/create_arm_debootstrap.sh
 ```
 
+Optional arguments:
++ -n <name> hostnane
++ -a <packages> add additional packages
++ -d <release> debian release (wheezy, jessie...)  
+
 # Build sunxi kernel and boot files
 
 You shoud have both debootstrap and sunxi directories in olinux/
 ```shell
 sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux sh ./olinux/create_sunxi_boot_files.sh
 ```
+
+Optional arguments:
++ -o offline mode; doesn't pull repositories so you should have run the script once without this option
++ -t <type> board type (lime,lime2,micro)
 
 # Install on a SD card
 
