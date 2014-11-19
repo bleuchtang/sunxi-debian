@@ -2,9 +2,10 @@ Debian-Sunxi
 ==========
 
 Bootstrap a minimal debian rootfs with sunxi kernel and boot files. For now
-only 3 olinuxino boards are available. Scripts in this repository are generic,
-and it's easy to add a new boad. Please make a pull request if you create and
-test a new board. I need reviewer for olinuxino lime2 and micro board. 
+only 3 olinuxino boards are available. All scripts in this repository are
+generic so it's easy to add a new boad. Please make a pull request if you
+create and test a new board. I need reviewer for olinuxino lime2 and micro
+olinuxino boards. 
 
 Thanks to [lukas2511](https://github.com/lukas2511/olinuxino-a20-micro) for
 quick bootstrap.
