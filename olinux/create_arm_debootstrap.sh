@@ -1,11 +1,45 @@
 #/bin/sh
 
 ######################
-#  Debootstrap part  #
+#    Debootstrap     #
 ######################
 
-targetdir=/olinux/debootstrap
+show_usage() {
+cat <<EOF
+# NAME
+
+  $(basename $0) -- Script to create a minimal deboostrap
+
+# OPTIONS
+
+  -d		debian release (wheezy, jessie) 	(default: wheezy)
+  -a		add packages
+
+EOF
+exit 1
+}
+
 distro=wheezy
+targetdir=/olinux/debootstrap
+name=olinux
+
+while getopts "a:d:n:" opt; do
+  case $opt in
+    d)
+      distro=$OPTARG
+      ;;
+    a)
+      packages=$OPTARG
+      ;;
+    n)
+      name=$OPTARG
+      ;;
+    \?)
+      show_usage        
+      ;;
+  esac
+done
+
 rm -rf $targetdir && mkdir -p $targetdir
 
 # install packages for debootstap
@@ -16,7 +50,6 @@ debootstrap --arch=armhf --foreign $distro $targetdir
 update-binfmts --disable
 mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
 update-binfmts --enable
-
 cp /usr/bin/qemu-arm-static $targetdir/usr/bin/
 cp /etc/resolv.conf $targetdir/etc
 chroot $targetdir /debootstrap/debootstrap --second-stage 
@@ -31,7 +64,7 @@ EOT
 chroot $targetdir apt-get update 
 
 # Add ssh server and ntp client
-chroot $targetdir apt-get install -y --force-yes openssh-server ntp
+chroot $targetdir apt-get install -y --force-yes openssh-server ntp $packages
 
 # Use dhcp on boot
 cat <<EOT > $targetdir/etc/network/interfaces
@@ -47,6 +80,9 @@ echo T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100 >> $targetdir/etc/inittab
 
 # add 'olimex' for root password
 sed -i -e 's/root:*/root:$6$20Vo8onH$rsNB42ksO1i84CzCTt8e90ludfzIFiIGygYeCNlHYPcDOwvAEPGQQaQsK.GYU2IiZNHG.e3tRFizLmD5lnaHH/' $targetdir/etc/shadow
+
+# add hostname 
+echo $name > $targetdir/etc/hostname
 
 # Remove useless files
 chroot $targetdir apt-get clean
