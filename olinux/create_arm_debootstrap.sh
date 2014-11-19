@@ -23,7 +23,7 @@ distro=wheezy
 targetdir=/olinux/debootstrap
 name=olinux
 
-while getopts "a:d:n:" opt; do
+while getopts ":a:d:n:" opt; do
   case $opt in
     d)
       distro=$OPTARG
@@ -78,7 +78,7 @@ EOT
 # Configure tty
 echo T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100 >> $targetdir/etc/inittab
 
-# add 'olimex' for root password
+# add 'olinux' for root password
 sed -i -e 's/root:*/root:$6$20Vo8onH$rsNB42ksO1i84CzCTt8e90ludfzIFiIGygYeCNlHYPcDOwvAEPGQQaQsK.GYU2IiZNHG.e3tRFizLmD5lnaHH/' $targetdir/etc/shadow
 
 # add hostname 
