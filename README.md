@@ -14,8 +14,8 @@ quick bootstrap.
 
 ```shell
 sudo docker pull debian:stable
-git clone https://github.com/bleuchtang/olinuxino-a20-lime
-cd olinuxino-a20-lime && sudo docker build -t debian:olinux .
+git clone https://github.com/bleuchtang/sunxi-debian
+cd sunxi-debian && sudo docker build -t debian:olinux .
 ```
 
 # Build minimal arm debootstrap
