@@ -24,6 +24,8 @@ We cannot perform a debootstrap in dockerfile because dockerfile doesn't accept
 privileged mode. For more details see [docker
 issue](https://github.com/docker/docker/issues/1916) 
 
+To build the minimal debian rootfs run:
+
 ```shell
 sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux sh ./olinux/create_arm_debootstrap.sh
 ```
@@ -35,7 +37,8 @@ Optional arguments:
 
 # Build sunxi kernel and boot files
 
-You shoud have both debootstrap and sunxi directories in olinux/
+To build sunxi kernel and boot files run:
+
 ```shell
 sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux sh ./olinux/create_sunxi_boot_files.sh
 ```
