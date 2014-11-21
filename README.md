@@ -45,7 +45,7 @@ sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux sh .
 
 Optional arguments:
 + -o offline mode; doesn't pull repositories so you should have run the script once without this option
-+ -t <type> board type (lime,lime2,micro)
++ -t <type> board type (lime,lime2,micro) default is A20 lime
 
 # Install on a SD card
 
