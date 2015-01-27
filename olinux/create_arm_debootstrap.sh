@@ -58,6 +58,7 @@ chroot $targetdir /debootstrap/debootstrap --second-stage
 # Configure debian apt repository
 cat <<EOT > $targetdir/etc/apt/sources.list
 deb http://ftp.fr.debian.org/debian $distro main contrib non-free
+deb http://security.debian.org/ $distro/updates main contrib non-free
 EOT
 cat <<EOT > $targerdir/etc/apt/apt.conf.d/71-no-recommends
 APT::Install-Suggests "0";
