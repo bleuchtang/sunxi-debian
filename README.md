@@ -5,7 +5,7 @@ Bootstrap a minimal debian rootfs with sunxi kernel and boot files. For now
 only 3 olinuxino boards are available. All scripts in this repository are
 generic so it's easy to add a new boad. Please make a pull request if you
 create and test a new board. I need reviewer for olinuxino lime2 and micro
-olinuxino boards. 
+olinuxino boards.
 
 Thanks to [lukas2511](https://github.com/lukas2511/olinuxino-a20-micro) for
 quick bootstrap.
@@ -22,7 +22,7 @@ cd sunxi-debian && sudo docker build -t debian:olinux .
 
 We cannot perform a debootstrap in dockerfile because dockerfile doesn't accept
 privileged mode. For more details see [docker
-issue](https://github.com/docker/docker/issues/1916) 
+issue](https://github.com/docker/docker/issues/1916)
 
 To build the minimal debian rootfs run:
 
@@ -33,7 +33,7 @@ sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux sh .
 Optional arguments:
 + -n <name> hostnane
 + -a <packages> add additional packages
-+ -d <release> debian release (wheezy, jessie...)  
++ -d <release> debian release (wheezy, jessie...)
 
 # Build sunxi kernel and boot files
 
@@ -61,7 +61,7 @@ mmc=/dev/sdc
 ## Partitioning
 
 Make 2 partitions; one for boot files (kernel, file with custom boot args...),
-and another for root fs. 
+and another for root fs.
 
 ```shell
 parted -s ${mmc} mklabel msdos
@@ -136,9 +136,9 @@ your home server so get an eye on [yunohost](https://yunohost.org/#/) ;)
 ## You probably want to Build your own docker image
 
 - Because it's quick and easy; tutorial [here](http://www.aossama.com/build-debian-docker-image-from-scratch/)
-- Because you shoudn't trust regitry images; demonstration [here](https://joeyh.name/blog/entry/docker_run_debian/) 
+- Because you shoudn't trust regitry images; demonstration [here](https://joeyh.name/blog/entry/docker_run_debian/)
 
-## External links 
+## External links
 
 - [how-to-create-bare-minimum-debian-wheezy-rootfs-from-scratch](http://olimex.wordpress.com/2014/07/21/how-to-create-bare-minimum-debian-wheezy-rootfs-from-scratch/)
 - [building-a-pure-debian-armhf-rootfs](http://blog.night-shade.org.uk/2013/12/building-a-pure-debian-armhf-rootfs/)

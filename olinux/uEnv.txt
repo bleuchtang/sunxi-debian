@@ -7,5 +7,5 @@ kernel=uImage
 loglevel=8
 panicarg=panic=10
 root=/dev/mmcblk0p2 rootwait
-extraargs=sunxi_ve_mem_reserve=0 sunxi_no_mali_mem_reserve sunxi_g2d_mem_reserve=0 sunxi_fb_mem_reserve=0 
+extraargs=sunxi_ve_mem_reserve=0 sunxi_no_mali_mem_reserve sunxi_g2d_mem_reserve=0 sunxi_fb_mem_reserve=0
 setargs=setenv bootargs console=${console} root=${root} loglevel=${loglevel} ${panicarg} ${extraargs}

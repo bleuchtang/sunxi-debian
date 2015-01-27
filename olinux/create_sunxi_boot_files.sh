@@ -12,7 +12,7 @@ cat <<EOF
 
 # OPTIONS
 
-  -o		offline mode				(mandatory) 
+  -o		offline mode				(mandatory)
   -t		olinux type (lime, lime2, micro) 	(default: lime)
 
 EOF
@@ -28,7 +28,7 @@ while getopts ":ot:" opt; do
       olinux=$OPTARG
       ;;
     \?)
-      show_usage        
+      show_usage
       ;;
   esac
 done
@@ -40,9 +40,9 @@ clone_or_pull (){
   if [ "$offline" ] ; then
     cd /olinux/sunxi/$name/ && make clean
     return 0
-  fi 
-  if [ -d /olinux/sunxi/$name/ ] ; then 
-    cd /olinux/sunxi/$name/ && make clean && git pull --depth 1 
+  fi
+  if [ -d /olinux/sunxi/$name/ ] ; then
+    cd /olinux/sunxi/$name/ && make clean && git pull --depth 1
   else
     git clone --depth 1 $repo/$project /olinux/sunxi/$name/
   fi
@@ -70,14 +70,14 @@ cd /olinux/sunxi/u-boot && make CROSS_COMPILE=arm-linux-gnueabihf $u_boot_config
 clone_or_pull linux-sunxi.git https://github.com/linux-sunxi
 cp /olinux/a20_defconfig /olinux/sunxi/linux-sunxi/arch/arm/configs/.
 cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm a20_defconfig
-cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j2 uImage  
+cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j2 uImage
 cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j2 INSTALL_MOD_PATH=out modules
 cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j2 INSTALL_MOD_PATH=out modules_install
 
 # Sunxi board configs
 clone_or_pull sunxi-boards.git https://github.com/linux-sunxi
-# Sunxi tools 
+# Sunxi tools
 clone_or_pull sunxi-tools.git https://github.com/linux-sunxi
 cd /olinux/sunxi/sunxi-tools/ && make
 cd /olinux/sunxi/ && rm -f script.bin && ./sunxi-tools/fex2bin sunxi-boards/sys_config/$sunxi_board_config script.bin
-cd /olinux/sunxi/ && chmod +x script.bin 
+cd /olinux/sunxi/ && chmod +x script.bin

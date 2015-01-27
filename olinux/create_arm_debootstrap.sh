@@ -36,7 +36,7 @@ while getopts ":a:d:n:" opt; do
       name=$OPTARG
       ;;
     \?)
-      show_usage        
+      show_usage
       ;;
   esac
 done
@@ -53,7 +53,7 @@ mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
 update-binfmts --enable
 cp /usr/bin/qemu-arm-static $targetdir/usr/bin/
 cp /etc/resolv.conf $targetdir/etc
-chroot $targetdir /debootstrap/debootstrap --second-stage 
+chroot $targetdir /debootstrap/debootstrap --second-stage
 
 # Configure debian apt repository
 cat <<EOT > $targetdir/etc/apt/sources.list
@@ -62,7 +62,7 @@ EOT
 cat <<EOT > $targerdir/etc/apt/apt.conf.d/71-no-recommends
 APT::Install-Suggests "0";
 EOT
-chroot $targetdir apt-get update 
+chroot $targetdir apt-get update
 
 # Add ssh server and ntp client
 chroot $targetdir apt-get install -y --force-yes openssh-server ntp $packages
@@ -82,7 +82,7 @@ echo T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100 >> $targetdir/etc/inittab
 # add 'olinux' for root password
 sed -i -e 's/root:*/root:$6$20Vo8onH$rsNB42ksO1i84CzCTt8e90ludfzIFiIGygYeCNlHYPcDOwvAEPGQQaQsK.GYU2IiZNHG.e3tRFizLmD5lnaHH/' $targetdir/etc/shadow
 
-# add hostname 
+# add hostname
 echo $name > $targetdir/etc/hostname
 
 # Remove useless files
