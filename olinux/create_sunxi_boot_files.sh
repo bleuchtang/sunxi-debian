@@ -57,7 +57,7 @@ elif [ "$olinux" = "a20micro" ] ; then
   sunxi_board_config="a20/a20-olinuxino_micro.fex"
   kernel_defconfig="a20_defconfig"
 elif [ "$olinux" = "a10lime" ] ; then
-  u_boot_config="A10-OLinuXino_Lime_defconfig"
+  u_boot_config="A10-OLinuXino-Lime_defconfig"
   sunxi_board_config="a10/a10-olinuxino-lime.fex"
   kernel_defconfig="a10_defconfig"
 else
