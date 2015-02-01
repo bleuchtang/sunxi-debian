@@ -13,7 +13,7 @@ cat <<EOF
 # OPTIONS
 
   -o		offline mode				(mandatory)
-  -t		olinux type (lime, lime2, micro) 	(default: lime)
+  -t		olinux type (a10lime, a20lime, a20lime2, a20micro) 	(default: a20lime)
 
 EOF
 exit 1
@@ -48,15 +48,22 @@ clone_or_pull (){
   fi
 }
 
-if [ "$olinux" = "lime2" ] ; then
-  u_boot_config=A20-OLinuXino-Lime2_defconfig
+if [ "$olinux" = "a20lime2" ] ; then
+  u_boot_config="A20-OLinuXino-Lime2_defconfig"
   sunxi_board_config="a20/a20-olinuxino_lime2.fex"
-elif [ "$olinux" = "micro" ] ; then
-  u_boot_config=A20-OLinuXino_MICRO_defconfig
+  kernel_defconfig="a20_defconfig"
+elif [ "$olinux" = "a20micro" ] ; then
+  u_boot_config="A20-OLinuXino_MICRO_defconfig"
   sunxi_board_config="a20/a20-olinuxino_micro.fex"
+  kernel_defconfig="a20_defconfig"
+elif [ "$olinux" = "a10lime" ] ; then
+  u_boot_config="A10-OLinuXino-Lime_defconfig"
+  sunxi_board_config="a10/a10-olinuxino-lime.fex"
+  kernel_defconfig="a10_defconfig"
 else
-  u_boot_config=A20-OLinuXino-Lime_defconfig
+  u_boot_config="A20-OLinuXino-Lime_defconfig"
   sunxi_board_config="a20/a20-olinuxino_lime.fex"
+  kernel_defconfig="a20_defconfig"
 fi
 
 mkdir -p /olinux/sunxi/
@@ -68,9 +75,9 @@ cd /olinux/sunxi/u-boot && make CROSS_COMPILE=arm-linux-gnueabihf $u_boot_config
 
 # Sunxi kernel
 clone_or_pull linux-sunxi.git https://github.com/linux-sunxi
-cp /olinux/a20_defconfig /olinux/sunxi/linux-sunxi/arch/arm/configs/.
-cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm a20_defconfig
-cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j2 uImage
+cp /olinux/$kernel_defconfig /olinux/sunxi/linux-sunxi/arch/arm/configs/.
+cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm $kernel_defconfig
+cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j2 uImage  
 cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j2 INSTALL_MOD_PATH=out modules
 cd /olinux/sunxi/linux-sunxi/ && make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j2 INSTALL_MOD_PATH=out modules_install
 
