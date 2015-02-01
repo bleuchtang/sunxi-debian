@@ -61,6 +61,7 @@ deb http://ftp.fr.debian.org/debian $distro main contrib non-free
 deb http://security.debian.org/ $distro/updates main contrib non-free
 EOT
 cat <<EOT > $targerdir/etc/apt/apt.conf.d/71-no-recommends
+APT::Install-Recommends "0";
 APT::Install-Suggests "0";
 EOT
 chroot $targetdir apt-get update
