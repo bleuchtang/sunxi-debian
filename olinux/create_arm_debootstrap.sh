@@ -17,6 +17,7 @@ cat <<EOF
   -d		debian release (wheezy, jessie) 	(default: wheezy)
   -a		add packages (wheezy)
   -n		name					(default: olinux)
+  -t		target directory for debootstrap	(default: /olinux/debootstrap)
 
 EOF
 exit 1
@@ -26,7 +27,7 @@ distro=wheezy
 targetdir=/olinux/debootstrap
 name=olinux
 
-while getopts ":a:d:n:" opt; do
+while getopts ":a:d:n:t:" opt; do
   case $opt in
     d)
       distro=$OPTARG
@@ -36,6 +37,9 @@ while getopts ":a:d:n:" opt; do
       ;;
     n)
       name=$OPTARG
+      ;;
+    t)
+      targetdir=$OPTARG
       ;;
     \?)
       show_usage
