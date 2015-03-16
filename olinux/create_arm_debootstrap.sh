@@ -53,10 +53,10 @@ rm -rf $targetdir && mkdir -p $targetdir
 apt-get install --force-yes -y debootstrap dpkg-dev qemu binfmt-support qemu-user-static dpkg-cross
 
 # Debootstrap
-debootstrap --arch=armhf --foreign $distro $targetdir
-update-binfmts --disable
 mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
-update-binfmts --enable
+bash /olinux/binfmt-misc-arm.sh unregister
+bash /olinux/binfmt-misc-arm.sh 
+debootstrap --arch=armhf --foreign $distro $targetdir
 cp /usr/bin/qemu-arm-static $targetdir/usr/bin/
 cp /etc/resolv.conf $targetdir/etc
 chroot $targetdir /debootstrap/debootstrap --second-stage
