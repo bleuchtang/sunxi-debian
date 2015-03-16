@@ -4,6 +4,8 @@
 # Sunxi  compilation #
 ######################
 
+set -e
+
 show_usage() {
 cat <<EOF
 # NAME

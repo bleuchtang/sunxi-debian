@@ -1,8 +1,10 @@
-#/bin/sh
+#/bin/bash
 
 ######################
 #    Debootstrap     #
 ######################
+
+set -e
 
 show_usage() {
 cat <<EOF
