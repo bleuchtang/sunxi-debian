@@ -21,16 +21,31 @@ N=/etc/init.d/firstrun
 
 set -e
 
+echo ""
+echo "##########################################"
+echo "##           FIRSTRUN SCRIPT            ##"
+echo "## WAIT SOME MINUTES FOR CONFIGURATIONS ##"
+echo "##########################################"
+echo ""
+
 case "$1" in
   start)
             reboot=false
                 echo ""
+                echo "######################"
+                echo "# ssh key generation #"
+                echo "######################"
+                echo ""
                 rm -f /etc/ssh/ssh_host*
                 dpkg-reconfigure openssh-server 
                 set +e
-                echo "Expanding rootfs..."
+                echo ""
+                echo "####################"
+                echo "# Expanding rootfs #"
+                echo "####################"
+                echo ""
 		device="/dev/mmcblk0"
-		((echo d; echo n; echo p; echo 1; echo ; echo; echo w;) | fdisk $device)>/dev/null
+		((echo d; echo n; echo p; echo 1; echo ; echo; echo w;) | fdisk $device)
                 if [ $? -eq 0 ] ;then
                         echo "Expanding rootfs success, rebooting automatically." 
 			/sbin/resize2fs /dev/mmcblk0p1 2>/dev/null
