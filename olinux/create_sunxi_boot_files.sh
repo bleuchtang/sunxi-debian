@@ -91,7 +91,7 @@ clone_or_pull linux.git git://git.kernel.org/pub/scm/linux/kernel/git/torvalds
 cd /olinux/sunxi/linux/
 # igorpecovnik patch for debian package
 patch -p1 < /olinux/patch/packaging-next.patch
-cp /olinux/linux-sunxi.config /olinux/sunxi/linux/.config
+cp /olinux/config/linux-sunxi.config /olinux/sunxi/linux/.config
 if [ "$LOGO" ] ; then
   cp /olinux/logo/LDN_logo.ppm /olinux/sunxi/linux/drivers/video/logo/logo_linux_clut224.ppm
 fi
@@ -103,4 +103,4 @@ rm -f /olinux/sunxi/*.deb
 make -j1 deb-pkg KBUILD_DEBARCH=armhf ARCH=arm DEBFULLNAME="$MAINTAINER" DEBEMAIL="$MAINTAINERMAIL" CROSS_COMPILE=arm-linux-gnueabihf-
 
 rm -rf /olinux/sunxi/config/boot.scr
-mkimage -C none -A arm -T script -d /olinux/boot.cmd /olinux/sunxi/boot.scr
+mkimage -C none -A arm -T script -d /olinux/config/boot.cmd /olinux/sunxi/boot.scr

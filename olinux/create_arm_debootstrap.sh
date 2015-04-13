@@ -76,7 +76,7 @@ apt-get install --force-yes -y debootstrap dpkg-dev qemu binfmt-support qemu-use
 mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
 bash /olinux/script/binfmt-misc-arm.sh unregister
 bash /olinux/script/binfmt-misc-arm.sh 
-debootstrap --arch=armhf --foreign $distro $TARGET_DIR
+debootstrap --arch=armhf --foreign $DEBIAN_RELEASE $TARGET_DIR
 cp /usr/bin/qemu-arm-static $TARGET_DIR/usr/bin/
 cp /etc/resolv.conf $TARGET_DIR/etc
 chroot_deb $TARGET_DIR '/debootstrap/debootstrap --second-stage'
