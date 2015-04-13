@@ -79,7 +79,7 @@ mkdir -p /olinux/sunxi/
 ## Sunxi u-boot
 clone_or_pull u-boot git://git.denx.de
 cd /olinux/sunxi/u-boot/
-make $u_boot_config ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
+make $U_BOOT_CONFIG ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
 if [ "$LOGO" ] ; then
   cp /olinux/logo/LDN_logo.bmp /olinux/sunxi/u-boot/tools/logos/denx.bmp
   sed -i -e 's/#define CONFIG_VIDEO_LOGO/#define CONFIG_VIDEO_LOGO\n#define CONFIG_VIDEO_BMP_LOGO/' /olinux/sunxi/u-boot/include/configs/sunxi-common.h
