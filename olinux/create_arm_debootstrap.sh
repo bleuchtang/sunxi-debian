@@ -15,31 +15,43 @@ cat <<EOF
 # OPTIONS
 
   -d		debian release (wheezy, jessie) 	(default: wheezy)
-  -a		add packages (wheezy)
-  -n		name					(default: olinux)
+  -b		olinux board (see config_board.sh) 	(default: a20lime)
+  -a		add packages to deboostrap
+  -n		hostname				(default: olinux)
   -t		target directory for debootstrap	(default: /olinux/debootstrap)
+  -i		install sunxi kernel files; you should have build them before.
+  -y		install yunohost (under development)
 
 EOF
 exit 1
 }
 
-distro=wheezy
-targetdir=/olinux/debootstrap
-name=olinux
+DEBIAN_RELEASE=wheezy
+TARGET_DIR=/olinux/debootstrap
+DEB_HOSTNAME=olinux
 
-while getopts ":a:d:n:t:" opt; do
+while getopts ":a:b:d:n:t:iy" opt; do
   case $opt in
     d)
-      distro=$OPTARG
+      DEBIAN_RELEASE=$OPTARG
+      ;;
+    b)
+      BOARD=$OPTARG
       ;;
     a)
-      packages=$OPTARG
+      PACKAGES=$OPTARG
       ;;
     n)
-      name=$OPTARG
+      DEB_HOSTNAME=$OPTARG
       ;;
     t)
-      targetdir=$OPTARG
+      TARGET_DIR=$OPTARG
+      ;;
+    i)
+      INSTALL_KERNEL=yes
+      ;;
+    y)
+      INSTALL_YUNOHOST=yes
       ;;
     \?)
       show_usage
@@ -47,36 +59,50 @@ while getopts ":a:d:n:t:" opt; do
   esac
 done
 
-rm -rf $targetdir && mkdir -p $targetdir
+source /olinux/config_board.sh
+
+rm -rf $TARGET_DIR && mkdir -p $TARGET_DIR
+
+chroot_deb (){
+
+  LC_ALL=C LANGUAGE=C LANG=C chroot $1 /bin/bash -c "$2"
+
+}
 
 # install packages for debootstap
 apt-get install --force-yes -y debootstrap dpkg-dev qemu binfmt-support qemu-user-static dpkg-cross
 
 # Debootstrap
 mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
-bash /olinux/binfmt-misc-arm.sh unregister
-bash /olinux/binfmt-misc-arm.sh 
-debootstrap --arch=armhf --foreign $distro $targetdir
-cp /usr/bin/qemu-arm-static $targetdir/usr/bin/
-cp /etc/resolv.conf $targetdir/etc
-chroot $targetdir /debootstrap/debootstrap --second-stage
+bash /olinux/script/binfmt-misc-arm.sh unregister
+bash /olinux/script/binfmt-misc-arm.sh 
+debootstrap --arch=armhf --foreign $distro $TARGET_DIR
+cp /usr/bin/qemu-arm-static $TARGET_DIR/usr/bin/
+cp /etc/resolv.conf $TARGET_DIR/etc
+chroot_deb $TARGET_DIR '/debootstrap/debootstrap --second-stage'
+
+# mount proc, sys and dev
+mount -t proc chproc $TARGET_DIR/proc
+mount -t sysfs chsys $TARGET_DIR/sys
+mount -t devtmpfs chdev $TARGET_DIR/dev || mount --bind /dev $TARGET_DIR/dev
+mount -t devpts chpts $TARGET_DIR/dev/pts || mount --bind /dev/pts $TARGET_DIR/dev/pts
 
 # Configure debian apt repository
-cat <<EOT > $targetdir/etc/apt/sources.list
-deb http://ftp.fr.debian.org/debian $distro main contrib non-free
-deb http://security.debian.org/ $distro/updates main contrib non-free
+cat <<EOT > $TARGET_DIR/etc/apt/sources.list
+deb http://ftp.fr.debian.org/debian $DEBIAN_RELEASE main contrib non-free
+deb http://security.debian.org/ $DEBIAN_RELEASE/updates main contrib non-free
 EOT
-cat <<EOT > $targerdir/etc/apt/apt.conf.d/71-no-recommends
+cat <<EOT > $TARGET_DIR/etc/apt/apt.conf.d/71-no-recommends
 APT::Install-Recommends "0";
 APT::Install-Suggests "0";
 EOT
-chroot $targetdir apt-get update
+chroot_deb $TARGET_DIR 'apt-get update'
 
 # Add ssh server and ntp client
-chroot $targetdir apt-get install -y --force-yes openssh-server ntp $packages
+chroot_deb $TARGET_DIR "apt-get install -y --force-yes openssh-server ntp parted locales $PACKAGES"
 
 # Use dhcp on boot
-cat <<EOT > $targetdir/etc/network/interfaces
+cat <<EOT > $TARGET_DIR/etc/network/interfaces
 auto lo
 iface lo inet loopback
 
@@ -84,17 +110,72 @@ allow-hotplug eth0
 iface eth0 inet dhcp
 EOT
 
+# Debootstrap optimisations from igorpecovnik
+# change default I/O scheduler, noop for flash media, deadline for SSD, cfq for mechanical drive
+cat <<EOT >> $TARGET_DIR/etc/sysfs.conf
+block/mmcblk0/queue/scheduler = noop
+#block/sda/queue/scheduler = cfq
+EOT
+
+# flash media tunning
+if [ -f "$TARGET_DIR/etc/default/tmpfs" ]; then
+  sed -e 's/#RAMTMP=no/RAMTMP=yes/g' -i $TARGET_DIR/etc/default/tmpfs
+  sed -e 's/#RUN_SIZE=10%/RUN_SIZE=128M/g' -i $TARGET_DIR/etc/default/tmpfs
+  sed -e 's/#LOCK_SIZE=/LOCK_SIZE=/g' -i $TARGET_DIR/etc/default/tmpfs
+  sed -e 's/#SHM_SIZE=/SHM_SIZE=128M/g' -i $TARGET_DIR/etc/default/tmpfs
+  sed -e 's/#TMP_SIZE=/TMP_SIZE=1G/g' -i $TARGET_DIR/etc/default/tmpfs
+fi
+
+# Generate locales
+sed -i "s/^# fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/" $TARGET_DIR/etc/locale.gen
+sed -i "s/^# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" $TARGET_DIR/etc/locale.gen
+chroot_deb $TARGET_DIR "locale-gen en_US.UTF-8"
+
+# Update timezone
+echo 'Europe/Paris' > $TARGET_DIR/etc/timezone
+chroot_deb $TARGET_DIR "dpkg-reconfigure -f noninteractive tzdata"
+
 # Configure tty
-echo T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100 >> $targetdir/etc/inittab
+echo T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100 >> $TARGET_DIR/etc/inittab
 
-# add 'olinux' for root password
-sed -i -e 's/root:*/root:$6$20Vo8onH$rsNB42ksO1i84CzCTt8e90ludfzIFiIGygYeCNlHYPcDOwvAEPGQQaQsK.GYU2IiZNHG.e3tRFizLmD5lnaHH/' $targetdir/etc/shadow
+# Good right on some directories
+chroot_deb $TARGET_DIR 'chmod 1777 /tmp/'
+chroot_deb $TARGET_DIR 'chgrp mail /var/mail/'
+chroot_deb $TARGET_DIR 'chmod g+w /var/mail/'
+chroot_deb $TARGET_DIR 'chmod g+s /var/mail/'
 
-# add hostname
-echo $name > $targetdir/etc/hostname
+# Set hostname
+echo $DEB_HOSTNAME > $TARGET_DIR/etc/hostname
+
+# Add firstrun init script
+install -m 755 -o root -g root /olinux/script/firstrun $TARGET_DIR/etc/init.d/
+chroot_deb $TARGET_DIR "insserv firstrun >> /dev/null"
+
+if [ $INSTALL_KERNEL ] ; then
+  cp /olinux/sunxi/*.deb $TARGET_DIR/tmp/
+  chroot_deb $TARGET_DIR 'dpkg -i /tmp/*.deb'
+  rm $TARGET_DIR/tmp/*
+  cp /olinux/sunxi/boot.scr $TARGET_DIR/boot/
+  chroot_deb $TARGET_DIR "ln -s /boot/dtb/$DTB /boot/board.dtb"
+fi
+
+if [ $INSTALL_YUNOHOST ] ; then
+  chroot_deb $TARGET_DIR "apt-get install -y --force-yes git"
+  chroot_deb $TARGET_DIR "git clone https://github.com/YunoHost/install_script /tmp/install_script"
+  chroot_deb $TARGET_DIR "cd /tmp/install_script && ./autoinstall_yunohostv2 test"
+fi
+
+# Add 'olinux' for root password and force to change it at first login
+chroot_deb $TARGET_DIR '(echo olinux;echo olinux;) | passwd root'
+chroot_deb $TARGET_DIR 'chage -d 0 root'
 
 # Remove useless files
-chroot $targetdir apt-get clean
-rm $targetdir/etc/resolv.conf
-rm $targetdir/usr/bin/qemu-arm-static
+chroot_deb $TARGET_DIR 'apt-get clean'
+rm $TARGET_DIR/etc/resolv.conf
+rm $TARGET_DIR/usr/bin/qemu-arm-static
 
+# Umount proc, sys, and dev 
+umount -l $TARGET_DIR/dev/pts
+umount -l $TARGET_DIR/dev
+umount -l $TARGET_DIR/proc
+umount -l $TARGET_DIR/sys
