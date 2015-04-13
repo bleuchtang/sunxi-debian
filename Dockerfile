@@ -1,6 +1,6 @@
 FROM debian:stable
 #FROM emile/wheezy
-MAINTAINER Émile_morel
+MAINTAINER Émile Morel
 
 # U-boot part
 RUN echo deb http://www.emdebian.org/debian unstable main > /etc/apt/sources.list.d/emdebian.list
@@ -13,9 +13,10 @@ RUN apt-get update
 RUN apt-get install --force-yes -y emdebian-archive-keyring
 RUN apt-get update
 
+# Install packages for kernel and u-boot compilation
 RUN apt-get install --force-yes -y gcc-4.7-arm-linux-gnueabihf ncurses-dev uboot-mkimage build-essential git vim libusb-1.0-0-dev pkg-config bc
 
 RUN ln -s /usr/bin/arm-linux-gnueabihf-gcc-4.7 /usr/bin/arm-linux-gnueabihf-gcc
 
-# install packages for debootstrap
+# Install packages for debootstrap
 RUN apt-get install --force-yes -y debootstrap dpkg-dev qemu binfmt-support qemu-user-static dpkg-cross
