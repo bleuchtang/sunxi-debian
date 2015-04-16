@@ -147,7 +147,8 @@ chroot_deb $TARGET_DIR 'chmod g+s /var/mail/'
 # Set hostname
 echo $DEB_HOSTNAME > $TARGET_DIR/etc/hostname
 
-# Add firstrun init script
+# Add firstrun and secondrun init script
+install -m 755 -o root -g root /olinux/script/secondrun $TARGET_DIR/etc/init.d/
 install -m 755 -o root -g root /olinux/script/firstrun $TARGET_DIR/etc/init.d/
 chroot_deb $TARGET_DIR "insserv firstrun >> /dev/null"
 

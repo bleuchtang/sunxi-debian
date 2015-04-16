@@ -11,6 +11,7 @@
 # Description:       Something needs to be done when  is
 #                    starting at first time.
 #                    regenerate ssh host key
+#                    expanding root partition 
 #                    run depmod 
 ### END INIT INFO
 
@@ -19,50 +20,46 @@
 
 N=/etc/init.d/firstrun
 
-set -e
-
-echo ""
-echo "##########################################"
-echo "##           FIRSTRUN SCRIPT            ##"
-echo "## WAIT SOME MINUTES FOR CONFIGURATIONS ##"
-echo "##########################################"
-echo ""
-
 case "$1" in
   start)
-            reboot=false
-                echo ""
-                echo "######################"
-                echo "# ssh key generation #"
-                echo "######################"
-                echo ""
-                rm -f /etc/ssh/ssh_host*
-                dpkg-reconfigure openssh-server 
-                set +e
-                echo ""
-                echo "####################"
-                echo "# Expanding rootfs #"
-                echo "####################"
-                echo ""
-		device="/dev/mmcblk0"
-		((echo d; echo n; echo p; echo 1; echo ; echo; echo w;) | fdisk $device)
-                if [ $? -eq 0 ] ;then
-                        echo "Expanding rootfs success, rebooting automatically." 
-			/sbin/resize2fs /dev/mmcblk0p1 2>/dev/null
-                        reboot=true
-                else
-                        echo "Expanding rootfs has failed, see log files." 
-                fi
-		depmod -a
-                /sbin/insserv -r firstrun
-		if $reboot;then
-			/sbin/reboot
-		fi
-        ;;
+    echo ""
+    echo "##########################################"
+    echo "##         FIRSTRUN INIT SCRIPT         ##"
+    echo "## WAIT SOME MINUTES FOR CONFIGURATIONS ##"
+    echo "##########################################"
+    echo ""
+    echo "######################"
+    echo "# ssh key generation #"
+    echo "######################"
+    echo ""
+    rm -f /etc/ssh/ssh_host*
+    dpkg-reconfigure openssh-server 
+    echo ""
+    echo "############################"
+    echo "# Expanding root partition #"
+    echo "############################"
+    echo ""
+    (echo d; echo n; echo p; echo 1; echo ; echo; echo w) | fdisk /dev/mmcblk0
+    /sbin/insserv secondrun 
+    echo ""
+    echo "##################"
+    echo "# Running depmod #"
+    echo "##################"
+    echo ""
+    /sbin/depmod -a
+    echo ""
+    echo "##################"
+    echo "#     Reboot     #"
+    echo "##################"
+    echo ""
+    /sbin/insserv -r firstrun
+    /sbin/insserv secondrun
+    /sbin/reboot
+    ;;
   *)
-        echo "Usage: $N {start}" >&2
-        exit 1
-        ;;
+    echo "Usage: $N {start}" >&2
+    exit 1
+    ;;
 esac
 
 exit 0
