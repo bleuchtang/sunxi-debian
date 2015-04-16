@@ -75,7 +75,16 @@ Find IP and ssh on it! (password: olinux)
 ssh root@mybox
 ```
 
-# Some links:
+# Some links/tips:
+
+## Convert bmp logo to ppm
+
+```shell
+
+bmptoppm Labriqueinter.net.bmp > Labriqueinter.net.ppm
+ppmquant 224 Labriqueinter.net.ppm > Labriqueinter.net224.ppm
+nmnoraw Labriqueinter.net224.ppm > Labriqueinter.net.ppm
+```
 
 ## You probably want to Build your own docker image
 
