@@ -27,7 +27,7 @@ while getopts "s:d:" opt; do
       DEVICE=$OPTARG
       ;;
     s)
-      SDSIZE=$OPTARG
+      IMGSIZE=$OPTARG
       ;;
     \?)
       show_usage
@@ -39,7 +39,7 @@ if [ -z $DEVICE ] ; then
   show_usage
 fi
 
-if [ "$DEVICE" == "img" ] && [ -z $SDSIZE ] ; then
+if [ "$DEVICE" == "img" ] && [ -z $IMGSIZE ] ; then
   show_usage
 fi
 
@@ -47,23 +47,28 @@ if [ "${DEVICE}" == "img" ] ; then
   echo "- Create image."
   rm -f olinux/$IMAGE
   # create image file
-  dd if=/dev/zero of=olinux/$IMAGE bs=1MB count=$SDSIZE status=noxfer >/dev/null 2>&1
+  dd if=/dev/zero of=olinux/$IMAGE bs=1MB count=$IMGSIZE status=noxfer >/dev/null 2>&1
   
   # find first avaliable free device
   DEVICE=$(losetup -f)
+  IMGSIZE="100%"
   TYPE="loop"
   
   # mount image as block device
   losetup $DEVICE $DEST/$IMAGE >/dev/null 2>&1
   
   sync
-  
+
+elif [ ! -z $IMGSIZE ] : then
+  IMGSIZE=${IMGSIZE}"MiB"
+else
+  IMGSIZE="100%"
 fi
 
 # create one partition starting at 2048 which is default
 echo "- Partitioning"
 parted --script -a optimal $DEVICE unit GB mklabel msdos 
-parted --script -a optimal $DEVICE unit GB mkpart primary ext4 2048s 99%
+parted --script -a optimal $DEVICE unit GB mkpart primary ext4 2048s ${IMGSIZE}
 parted --script -a optimal $DEVICE unit GB align-check optimal 1
 
 if [ "${TYPE}" == "loop" ] ; then
