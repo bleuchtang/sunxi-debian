@@ -29,7 +29,7 @@ THREADS=2
 MAINTAINER="Emile"
 MAINTAINERMAIL="emile@bleuchtang.fr"
 
-while getopts ":ob:t:l" opt; do
+while getopts ":ob:t:l:" opt; do
   case $opt in
     o)
       OFFLINE=yes
@@ -41,7 +41,7 @@ while getopts ":ob:t:l" opt; do
       THREADS=$OPTARG
       ;;
     l)
-      LOGO=yes
+      LOGO=$OPTARG
       ;;
     \?)
       show_usage
@@ -81,7 +81,7 @@ clone_or_pull u-boot git://git.denx.de
 cd /olinux/sunxi/u-boot/
 make $U_BOOT_CONFIG ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
 if [ "$LOGO" ] ; then
-  cp /olinux/logo/LDN_logo.bmp /olinux/sunxi/u-boot/tools/logos/denx.bmp
+  cp /olinux/logo/${LOGO}.bmp /olinux/sunxi/u-boot/tools/logos/denx.bmp
   sed -i -e 's/#define CONFIG_VIDEO_LOGO/#define CONFIG_VIDEO_LOGO\n#define CONFIG_VIDEO_BMP_LOGO/' /olinux/sunxi/u-boot/include/configs/sunxi-common.h
 fi
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
@@ -93,7 +93,7 @@ cd /olinux/sunxi/linux/
 patch -p1 < /olinux/patch/packaging-next.patch
 cp /olinux/config/linux-sunxi.config /olinux/sunxi/linux/.config
 if [ "$LOGO" ] ; then
-  cp /olinux/logo/LDN_logo.ppm /olinux/sunxi/linux/drivers/video/logo/logo_linux_clut224.ppm
+  cp /olinux/logo/${LOGO}.ppm /olinux/sunxi/linux/drivers/video/logo/logo_linux_clut224.ppm
 fi
 #make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- sunxi_defconfig
 #make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
