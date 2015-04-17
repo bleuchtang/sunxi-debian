@@ -59,7 +59,7 @@ if [ "${DEVICE}" == "img" ] ; then
   
   sync
 
-elif [ ! -z $IMGSIZE ] : then
+elif [ ! -z $IMGSIZE ] ; then
   IMGSIZE=${IMGSIZE}"MiB"
 else
   IMGSIZE="100%"
