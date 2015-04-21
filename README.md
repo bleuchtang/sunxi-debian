@@ -23,7 +23,7 @@ cd sunxi-debian && sudo docker build -t debian:olinux .
 To build sunxi kernel and boot files run:
 
 ```shell
-sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux bash ./olinux/create_sunxi_boot_files.sh
+sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux bash ./olinux/create_sunxi_boot_files.sh -c
 ```
 
 Optional arguments:
@@ -40,7 +40,7 @@ privileged mode. For more details see [docker issue](https://github.com/docker/d
 To build the minimal debian rootfs with the kernel previously build:
 
 ```shell
-sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux bash ./olinux/create_arm_debootstrap.sh -i
+sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux bash ./olinux/create_arm_debootstrap.sh -i -c
 ```
 
 Optional arguments:
