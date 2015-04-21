@@ -30,7 +30,7 @@ exit 1
 THREADS=2
 MAINTAINER="Emile"
 MAINTAINERMAIL="emile@bleuchtang.fr"
-REP=$(dirname $0)
+REP=/olinux
 TARGET=/olinux/sunxi
 
 while getopts ":ob:t:l:c" opt; do
@@ -109,7 +109,7 @@ clone_or_pull linux.git http://git.kernel.org/pub/scm/linux/kernel/git/torvalds
 cd ${TARGET}/linux/
 # igorpecovnik patch for debian package
 patch -p1 < ${REP}/patch/packaging-next.patch
-cp /${REP}/config/linux-sunxi.config ${TARGET}/linux/.config
+cp ${REP}/config/linux-sunxi.config ${TARGET}/linux/.config
 if [ "$LOGO" ] ; then
   cp /${REP}/logo/${LOGO}.ppm ${TARGET}/linux/drivers/video/logo/logo_linux_clut224.ppm
 fi

@@ -21,11 +21,10 @@ EOF
 exit 1
 }
 
-TARGET=/olinux/olinux.img
+TARGET=./olinux/olinux.img
 MNT=/mnt
-IMAGE=olinux.img
-DEB_DIR=/olinux/deboostrap
-UBOOT_FILE=/olinux/sunxi/u-boot/u-boot-sunxi-with-spl.bin
+DEB_DIR=./olinux/debootstrap
+UBOOT_FILE=./olinux/sunxi/u-boot/u-boot-sunxi-with-spl.bin
 
 while getopts ":s:d:t:b:u:" opt; do
   case $opt in
