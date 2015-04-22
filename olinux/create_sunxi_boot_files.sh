@@ -92,7 +92,7 @@ cd ${TARGET}/u-boot/
 if [ ${CROSS} ] ; then
   make $U_BOOT_CONFIG ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
 else
-  make $U_BOOT_CONFIG
+  make $U_BOOT_CONFIG CC=/usr/bin/gcc-4.7
 fi
 if [ "$LOGO" ] ; then
   cp ${REP}/logo/${LOGO}.bmp ${TARGET}/u-boot/tools/logos/denx.bmp
@@ -101,7 +101,7 @@ fi
 if [ ${CROSS} ] ; then
   make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
 else
-  make
+  make CC=/usr/bin/gcc-4.7 
 fi
 
 # Linux kernel
@@ -118,14 +118,14 @@ fi
 if [ ${CROSS} ] ; then
   make -j${THREADS} ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- all zImage
 else
-  make -j${THREADS} all zImage
+  make -j${THREADS} CC=/usr/bin/gcc-4.7 all zImage
 fi
 # Install device tree blobs in separate package, link zImage to kernel image script
 rm -f ${TARGET}/*.deb
 if [ ${CROSS} ] ; then
   make -j1 deb-pkg KBUILD_DEBARCH=armhf ARCH=arm DEBFULLNAME="$MAINTAINER" DEBEMAIL="$MAINTAINERMAIL" CROSS_COMPILE=arm-linux-gnueabihf-
 else
-  make -j1 deb-pkg KBUILD_DEBARCH=armhf DEBFULLNAME="$MAINTAINER" DEBEMAIL="$MAINTAINERMAIL"
+  make -j1 deb-pkg KBUILD_DEBARCH=armhf DEBFULLNAME="$MAINTAINER" DEBEMAIL="$MAINTAINERMAIL" CC=/usr/bin/gcc-4.7
 fi
 
 rm -rf ${TARGET}/config/boot.scr
