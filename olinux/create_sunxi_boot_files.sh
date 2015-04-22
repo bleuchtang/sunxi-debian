@@ -30,7 +30,7 @@ exit 1
 THREADS=2
 MAINTAINER="Emile"
 MAINTAINERMAIL="emile@bleuchtang.fr"
-REP=/olinux
+REP=$(dirname $0)
 TARGET=/olinux/sunxi
 
 while getopts ":ob:t:l:c" opt; do
