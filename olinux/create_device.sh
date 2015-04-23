@@ -107,7 +107,7 @@ if [ -d ${DEB_DIR} ] ; then
   cp -ar ${DEB_DIR}/* $MNT/
 else
   # Assume that is a tarball file
-  tar xvf ${DEB_DIR} -C $MNT/ .
+  tar --same-owner --preserve-permissions -xvf ${DEB_DIR} -C $MNT/ .
 fi
 sync
 
