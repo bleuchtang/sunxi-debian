@@ -20,7 +20,7 @@ cat <<EOF
   -t		target directory for compilation			(default: /olinux/sunxi)
   -j		number of thread 					(default: 2)
   -l		change linux boot logo
-  -c		cross compilation 
+  -c		cross compilation
 
 EOF
 exit 1
@@ -101,7 +101,7 @@ fi
 if [ ${CROSS} ] ; then
   make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
 else
-  make CC=/usr/bin/gcc-4.7 
+  make CC=/usr/bin/gcc-4.7
 fi
 
 # Linux kernel

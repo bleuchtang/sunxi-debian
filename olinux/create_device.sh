@@ -62,15 +62,15 @@ if [ "${DEVICE}" == "img" ] ; then
   rm -f ${TARGET}
   # create image file
   dd if=/dev/zero of=${TARGET} bs=1MB count=$IMGSIZE status=noxfer >/dev/null 2>&1
-  
+
   # find first avaliable free device
   DEVICE=$(losetup -f)
   IMGSIZE="100%"
   TYPE="loop"
-  
+
   # mount image as block device
   losetup $DEVICE ${TARGET}
-  
+
   sync
 
 elif [ ! -z $IMGSIZE ] ; then
@@ -81,7 +81,7 @@ fi
 
 # create one partition starting at 2048 which is default
 echo "- Partitioning"
-parted --script $DEVICE mklabel msdos 
+parted --script $DEVICE mklabel msdos
 parted --script $DEVICE mkpart primary ext4 2048s ${IMGSIZE}
 parted --script $DEVICE align-check optimal 1
 
