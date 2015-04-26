@@ -80,7 +80,7 @@ clone_or_pull (){
       cd ${TARGET}/$name/ && git checkout . && git pull
     fi
   else
-    git clone $repo/$project ${TARGET}/$name/
+    git clone --depth=1 $repo/$project ${TARGET}/$name/
   fi
 }
 
