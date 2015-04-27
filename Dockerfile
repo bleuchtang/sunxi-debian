@@ -1,4 +1,4 @@
-FROM debian:stable
+FROM debian:wheezy
 #FROM emile/wheezy
 MAINTAINER Émile Morel
 
