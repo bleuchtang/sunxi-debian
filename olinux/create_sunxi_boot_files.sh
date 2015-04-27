@@ -19,8 +19,9 @@ cat <<EOF
   -b		olinux board (a10lime, a20lime, a20lime2, a20micro) 	(default: a20lime)
   -t		target directory for compilation			(default: /olinux/sunxi)
   -j		number of thread 					(default: 2)
-  -l		change linux boot logo
-  -c		cross compilation 
+  -l		change linux boot logo                                  (default: false)
+  -c		cross compilation                                       (default: false)
+  -s 		use stable tarball (and not GIT tree)                   (default: false)
 
 EOF
 exit 1
@@ -32,8 +33,10 @@ MAINTAINER=${MAINTAINER:-'Emile'}
 MAINTAINERMAIL=${MAINTAINERMAIL:-'emile@bleuchtang.fr'}
 REP=$(dirname $0)
 TARGET=/olinux/sunxi
+UBOOT_RELEASE=${UBOOT_RELEASE:-'ftp://ftp.denx.de/pub/u-boot/u-boot-latest.tar.bz2'}
+LINUX_RELEASE=${LINUX_RELEASE:-'https://kernel.org/pub/linux/kernel/v4.x/linux-4.0.tar.xz'}
 
-while getopts ":ob:t:l:c" opt; do
+while getopts ":ob:t:l:c:s" opt; do
   case $opt in
     o)
       OFFLINE=yes
@@ -53,6 +56,9 @@ while getopts ":ob:t:l:c" opt; do
     c)
       CROSS=yes
       ;;
+    s)
+      TARBALL=yes
+      ;;
     \?)
       show_usage
       ;;
@@ -61,10 +67,28 @@ done
 
 . ${REP}/config_board.sh
 
-clone_or_pull (){
+fetch (){
   project=$1
   repo=$2
+  tarball_url=$3
   name=$(echo $project |  sed 's/.git$//')
+  if [ ${TARBALL} ] ; then
+    cd ${TARGET}
+    archive=$(basename $tarball_url)
+    format=$(basename "${archive##*.}")
+    case $format in
+      'gz')  tar_opts='xzf' ;;
+      'xz')  tar_opts='xf'  ;;
+      'bz2') tar_opts='xjf' ;;
+    esac
+    wget $tarball_url -O $archive
+    mkdir -p tmp
+    tar $tar_opts $archive -C tmp/
+    mkdir -p $name
+    mv tmp/$name*/* $name
+    rm -rf tmp/
+    return 0
+  fi
   if [ "$OFFLINE" ] ; then
     if [ -f ${TARGET}/$name/Makefile ] ; then
       cd ${TARGET}/$name/ && make clean && git checkout .
@@ -87,7 +111,7 @@ clone_or_pull (){
 mkdir -p ${TARGET}/
 
 ## Sunxi u-boot
-clone_or_pull u-boot.git http://git.denx.de
+fetch u-boot.git http://git.denx.de $UBOOT_RELEASE
 cd ${TARGET}/u-boot/
 if [ ${CROSS} ] ; then
   make $U_BOOT_CONFIG ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
@@ -105,7 +129,7 @@ else
 fi
 
 # Linux kernel
-clone_or_pull linux.git http://git.kernel.org/pub/scm/linux/kernel/git/torvalds
+fetch linux.git http://git.kernel.org/pub/scm/linux/kernel/git/torvalds $LINUX_RELEASE
 cd ${TARGET}/linux/
 # igorpecovnik patch for debian package
 patch -p1 < ${REP}/patch/packaging-next.patch
