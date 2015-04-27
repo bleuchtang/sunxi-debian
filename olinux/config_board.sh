@@ -1,7 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
 case $BOARD in
-
   a20lime2)
     U_BOOT_CONFIG="A20-OLinuXino-Lime2_defconfig"
     DTB="sun7i-a20-olinuxino-lime2.dtb"
@@ -18,5 +17,4 @@ case $BOARD in
     U_BOOT_CONFIG="A20-OLinuXino-Lime_defconfig"
     DTB="sun7i-a20-olinuxino-lime.dtb"
     ;;
-
 esac
