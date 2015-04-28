@@ -28,8 +28,8 @@ exit 1
 
 
 THREADS=2
-MAINTAINER="Emile"
-MAINTAINERMAIL="emile@bleuchtang.fr"
+MAINTAINER=${MAINTAINER:-'Emile'}
+MAINTAINERMAIL=${MAINTAINERMAIL:-'emile@bleuchtang.fr'}
 REP=$(dirname $0)
 TARGET=/olinux/sunxi
 
