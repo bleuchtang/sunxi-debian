@@ -21,8 +21,8 @@ cat <<EOF
   -t		target directory for debootstrap	(default: /olinux/debootstrap)
   -i		install sunxi kernel files; you should have build them before.
   -y		install yunohost (doesn't work with cross debootstrap)
-  -c		cross debootstrap 
-  -p		use aptcacher proxy 
+  -c		cross debootstrap
+  -p		use aptcacher proxy
 
 EOF
 exit 1
@@ -80,7 +80,7 @@ if [ ${CROSS} ] ; then
   # Debootstrap
   mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
   bash ${REP}/script/binfmt-misc-arm.sh unregister
-  bash ${REP}/script/binfmt-misc-arm.sh 
+  bash ${REP}/script/binfmt-misc-arm.sh
   debootstrap --arch=armhf --foreign $DEBIAN_RELEASE $TARGET_DIR
   cp /usr/bin/qemu-arm-static $TARGET_DIR/usr/bin/
   cp /etc/resolv.conf $TARGET_DIR/etc
@@ -178,7 +178,7 @@ fi
 
 if [ $INSTALL_YUNOHOST ] ; then
   chroot_deb $TARGET_DIR "apt-get install -y --force-yes git"
-  chroot_deb $TARGET_DIR "git clone https://github.com/YunoHost/install_script /tmp/install_script"
+  chroot_deb $TARGET_DIR "git clone --depth=1 https://github.com/YunoHost/install_script /tmp/install_script"
   chroot_deb $TARGET_DIR "cd /tmp/install_script && ./autoinstall_yunohostv2 || exit 0"
 fi
 
@@ -195,10 +195,10 @@ if [ ${CROSS} ] ; then
 fi
 
 if [ ${APTCACHER} ] ; then
-  rm $TARGET_DIR/etc/apt/apt.conf.d/01proxy 
+  rm $TARGET_DIR/etc/apt/apt.conf.d/01proxy
 fi
 
-# Umount proc, sys, and dev 
+# Umount proc, sys, and dev
 umount -l $TARGET_DIR/dev/pts
 umount -l $TARGET_DIR/dev
 umount -l $TARGET_DIR/proc
