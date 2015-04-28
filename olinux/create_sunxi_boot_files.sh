@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 
 ######################
 # Sunxi  compilation #
@@ -59,7 +59,7 @@ while getopts ":ob:t:l:c" opt; do
   esac
 done
 
-source ${REP}/config_board.sh
+. ${REP}/config_board.sh
 
 clone_or_pull (){
   project=$1

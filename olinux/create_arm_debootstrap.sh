@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/sh
 
 ######################
 #    Debootstrap     #
@@ -68,7 +68,7 @@ while getopts ":a:b:d:n:t:i:ycp" opt; do
   esac
 done
 
-source ${REP}/config_board.sh
+. ${REP}/config_board.sh
 
 rm -rf $TARGET_DIR && mkdir -p $TARGET_DIR
 

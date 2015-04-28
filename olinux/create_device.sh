@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 set -x
@@ -53,11 +53,11 @@ if [ -z $DEVICE ] ; then
   show_usage
 fi
 
-if [ "$DEVICE" == "img" ] && [ -z $IMGSIZE ] ; then
+if [ "$DEVICE" = "img" ] && [ -z $IMGSIZE ] ; then
   show_usage
 fi
 
-if [ "${DEVICE}" == "img" ] ; then
+if [ "${DEVICE}" = "img" ] ; then
   echo "- Create image."
   rm -f ${TARGET}
   # create image file
@@ -85,7 +85,7 @@ parted --script $DEVICE mklabel msdos
 parted --script $DEVICE mkpart primary ext4 2048s ${IMGSIZE}
 parted --script $DEVICE align-check optimal 1
 
-if [ "${TYPE}" == "loop" ] ; then
+if [ "${TYPE}" = "loop" ] ; then
   DEVICEP1=${DEVICE}p1
 else
   DEVICEP1=${DEVICE}1
@@ -116,7 +116,7 @@ dd if=${UBOOT_FILE} of=${DEVICE} bs=1024 seek=8 >/dev/null 2>&1
 sync
 
 echo "- Umount"
-if [ "${TYPE}" == "loop" ] ; then
+if [ "${TYPE}" = "loop" ] ; then
   umount $MNT
   losetup -d $DEVICE
 else
