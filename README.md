@@ -67,6 +67,9 @@ You can directly create a image file that you can copy after on your sd card or 
 sudo bash olinux/create_device.sh -d img -s 500
 ```
 
+/!\ If you install some additional packages you should increase the size of the
+image (change the -s 500 parameter).
+
 # Login to your Olimex
 
 Find IP and ssh on it! (password: olinux)
