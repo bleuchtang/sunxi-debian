@@ -27,10 +27,10 @@ sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux bash
 ```
 
 Optional arguments:
-+ -o offline mode; doesn't pull repositories so you should have run the script once without this option
++ -o off-line mode; doesn't pull repositories so you should have run the script once without this option
 + -b <type> board type (lime,lime2,micro) default is A20 lime
 + -t <number> number of thread for compilation
-+ -l change linux logo on u-boot and kernel 
++ -l change linux logo on u-boot and kernel
 
 # Build minimal arm debootstrap
 
@@ -55,13 +55,13 @@ Optional arguments:
 ## Setup SD card device
 
 Find your device card (with dmesg for instance). Call create_device script with
-this device in parameter. This script install debootstrap previously build. 
+this device in parameter. This script install debootstrap previously build.
 
 ```shell
 sudo bash olinux/create_device.sh -d /dev/sdc
 ```
 
-You can directly create a image file that you can copy after on your sd card or share with others. 
+You can directly create a image file that you can copy after on your sd card or share with others.
 
 ```shell
 sudo bash olinux/create_device.sh -d img -s 500
@@ -74,6 +74,8 @@ image (change the -s 500 parameter).
 
 Find IP and ssh on it! (password: olinux)
 
+**hint**: The IP address is displayed on the login screen, but you must plug a screen.
+
 ```shell
 ssh root@mybox
 ```
@@ -83,7 +85,6 @@ ssh root@mybox
 ## Convert bmp logo to ppm
 
 ```shell
-
 bmptoppm Labriqueinter.net.bmp > Labriqueinter.net.ppm
 ppmquant 224 Labriqueinter.net.ppm > Labriqueinter.net224.ppm
 nmnoraw Labriqueinter.net224.ppm > Labriqueinter.net.ppm
