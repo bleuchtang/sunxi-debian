@@ -125,7 +125,7 @@ fi
 if [ ${CROSS} ] ; then
   make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
 else
-  make CC=/usr/bin/gcc-4.7 
+  make CC=/usr/bin/gcc-4.7
 fi
 
 # Linux kernel
