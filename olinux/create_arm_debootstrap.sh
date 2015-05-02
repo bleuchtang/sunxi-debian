@@ -160,6 +160,10 @@ chroot_deb $TARGET_DIR 'chgrp mail /var/mail/'
 chroot_deb $TARGET_DIR 'chmod g+w /var/mail/'
 chroot_deb $TARGET_DIR 'chmod g+s /var/mail/'
 
+# Install rng (Random Number Generator) to gain enough entropy for SSL,GPG key generation
+chroot_deb $TARGET_DIR "apt-get install -y --force-yes rng-tools"
+echo 'HRNGDEVICE=/dev/urandom' >> $TARGET_DIR/etc/default/rng-tools
+
 # Set hostname
 echo $DEB_HOSTNAME > $TARGET_DIR/etc/hostname
 
