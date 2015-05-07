@@ -23,14 +23,17 @@ cd sunxi-debian && sudo docker build -t debian:olinux .
 To build sunxi kernel and boot files run:
 
 ```shell
-sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux bash /olinux/create_sunxi_boot_files.sh -c
+sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux bash /olinux/create_sunxi_boot_files.sh -c -s
 ```
 
 Optional arguments:
 + -o off-line mode; doesn't pull repositories so you should have run the script once without this option
-+ -b <type> board type (lime,lime2,micro) default is A20 lime
-+ -t <number> number of thread for compilation
++ -b <type> board type (a10lime, a20lime, a20lime2, a20micro) default is A20 lime
++ -t <dir> target directory for compilation (default /olinux/sunxi)
++ -j <thread> number of thread for compilation (default 2)
 + -l change linux logo on u-boot and kernel
++ -c use cross-compilation settings
++ -s use stable tarball (for linux kernel and u-boot) instead of GIT tree
 
 # Build minimal arm debootstrap
 
@@ -40,15 +43,19 @@ privileged mode. For more details see [docker issue](https://github.com/docker/d
 To build the minimal debian rootfs with the kernel previously build:
 
 ```shell
-sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux bash /olinux/create_arm_debootstrap.sh -i olinux/sunxi -c
+sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux bash /olinux/create_arm_debootstrap.sh -i olinux/sunxi -c -s
 ```
 
 Optional arguments:
-+ -n <name> hostnane
-+ -a <packages> add additional packages
-+ -d <release> debian release (wheezy, jessie...)
-+ -i install kernel previously build
-+ -y install yunohost with chroot (testing)
++ -d <name>  debian release (wheezy, jessie) 	(default: wheezy)
++ -b <board> olinux board (see config_board.sh) (default: a20lime)
++ -a <packages> add packages to deboostrap
++ -n <hostname> hostname (default: olinux)
++ -t <target> target directory for debootstrap	(default: /olinux/debootstrap)
++ -i (bool) install sunxi kernel files; you should have build them before.
++ -y (bool) install yunohost (doesn't work with cross debootstrap)
++ -c (bool) cross debootstrap
++ -p (bool) use aptcacher proxy
 
 # Install on a SD card
 

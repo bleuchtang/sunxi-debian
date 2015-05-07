@@ -36,7 +36,7 @@ TARGET=/olinux/sunxi
 UBOOT_RELEASE=${UBOOT_RELEASE:-'ftp://ftp.denx.de/pub/u-boot/u-boot-latest.tar.bz2'}
 LINUX_RELEASE=${LINUX_RELEASE:-'https://kernel.org/pub/linux/kernel/v4.x/linux-4.0.tar.xz'}
 
-while getopts ":ob:t:l:c:s" opt; do
+while getopts ":ob:t:l:cs" opt; do
   case $opt in
     o)
       OFFLINE=yes
