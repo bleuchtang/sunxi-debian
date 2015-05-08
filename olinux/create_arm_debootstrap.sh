@@ -151,7 +151,7 @@ chroot_deb $TARGET_DIR "locale-gen en_US.UTF-8"
 echo 'Europe/Paris' > $TARGET_DIR/etc/timezone
 chroot_deb $TARGET_DIR "dpkg-reconfigure -f noninteractive tzdata"
 
-if [ $DEBIAN_RELEASE == "jessie" ] ; then
+if [[ ${DEBIAN_RELEASE} = "jessie" ]] ; then
   # Add fstab for root
   chroot_deb $TARGET_DIR "echo '/dev/mmcblk0 / ext4	defaults	0	1' /etc/fstab"
   # Configure tty
