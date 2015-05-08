@@ -199,7 +199,7 @@ fi
 if [ $INSTALL_YUNOHOST ] ; then
   chroot_deb $TARGET_DIR "apt-get install -y --force-yes git"
   chroot_deb $TARGET_DIR "git clone https://github.com/YunoHost/install_script /tmp/install_script"
-  chroot_deb $TARGET_DIR "cd /tmp/install_script && ./autoinstall_yunohostv2 || exit 0"
+  chroot_deb $TARGET_DIR "cd /tmp/install_script && ./autoinstall_yunohostv2 testing || exit 0"
 fi
 
 # Add 'olinux' for root password and force to change it at first login
