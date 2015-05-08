@@ -151,8 +151,24 @@ chroot_deb $TARGET_DIR "locale-gen en_US.UTF-8"
 echo 'Europe/Paris' > $TARGET_DIR/etc/timezone
 chroot_deb $TARGET_DIR "dpkg-reconfigure -f noninteractive tzdata"
 
-# Configure tty
-echo T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100 >> $TARGET_DIR/etc/inittab
+if [ $DEBIAN_RELEASE == "jessie" ] ; then
+  # Add fstab for root
+  chroot_deb $TARGET_DIR "echo '/dev/mmcblk0 / ext4	defaults	0	1' /etc/fstab"
+  # Configure tty
+  install -m 755 -o root -g root ${REP}/config/ttyS0.conf $TARGET_DIR/etc/init/ttyS0.conf
+  chroot_deb $TARGET_DIR 'cp /lib/systemd/system/serial-getty@.service /etc/systemd/system/getty.target.wants/serial-getty@ttyS0.service'
+  chroot_deb $TARGET_DIR 'sed -e s/"--keep-baud 115200,38400,9600"/"-L 115200"/g -i /etc/systemd/system/getty.target.wants/serial-getty@ttyS0.service'
+  # specifics packets add and remove
+  chroot_deb $TARGET_DIR "debconf-apt-progress -- apt-get -y install libnl-3-dev busybox-syslogd software-properties-common python-software-properties"
+  chroot_deb $TARGET_DIR "apt-get -y remove rsyslog"
+  # don't clear screen tty1
+  chroot_deb $TARGET_DIR 'sed -e s,"TTYVTDisallocate=yes","TTYVTDisallocate=no",g -i /etc/systemd/system/getty.target.wants/getty@tty1.service'
+  # enable root login for latest ssh on jessie
+  chroot_deb $TARGET_DIR "sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
+else
+  # Configure tty
+  echo T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100 >> $TARGET_DIR/etc/inittab
+fi
 
 # Good right on some directories
 chroot_deb $TARGET_DIR 'chmod 1777 /tmp/'
