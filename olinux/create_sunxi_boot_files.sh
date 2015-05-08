@@ -74,6 +74,7 @@ fetch (){
   name=$(echo $project |  sed 's/.git$//')
   if [ ${TARBALL} ] ; then
     cd ${TARGET}
+    [ -d ${name} ] && rm -rf "${name:?}/"*
     archive=$(basename $tarball_url)
     format=$(basename "${archive##*.}")
     case $format in
