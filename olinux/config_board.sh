@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 case $BOARD in
   a20lime2)
