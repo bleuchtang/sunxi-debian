@@ -114,8 +114,9 @@ fi
 
 chroot_deb $TARGET_DIR 'apt-get update'
 
-# Add ssh server and ntp client
-chroot_deb $TARGET_DIR "apt-get install -y --force-yes openssh-server ntp parted locales $PACKAGES"
+# Add usefull packages
+chroot_deb $TARGET_DIR "apt-get install -y --force-yes openssh-server ntp parted locales vim bash-completion rng-tools $PACKAGES"
+echo 'HRNGDEVICE=/dev/urandom' >> $TARGET_DIR/etc/default/rng-tools
 
 # Use dhcp on boot
 cat <<EOT > $TARGET_DIR/etc/network/interfaces
@@ -124,6 +125,9 @@ iface lo inet loopback
 
 allow-hotplug eth0
 iface eth0 inet dhcp
+
+allow-hotplug usb0
+iface usb0 inet dhcp
 EOT
 
 # Debootstrap optimisations from igorpecovnik
@@ -151,9 +155,9 @@ chroot_deb $TARGET_DIR "locale-gen en_US.UTF-8"
 echo 'Europe/Paris' > $TARGET_DIR/etc/timezone
 chroot_deb $TARGET_DIR "dpkg-reconfigure -f noninteractive tzdata"
 
-if [[ ${DEBIAN_RELEASE} = "jessie" ]] ; then
+if [ "$DEBIAN_RELEASE" = "jessie" ] ; then
   # Add fstab for root
-  chroot_deb $TARGET_DIR "echo '/dev/mmcblk0 / ext4	defaults	0	1' /etc/fstab"
+  chroot_deb $TARGET_DIR "echo '/dev/mmcblk0 / ext4	defaults	0	1' >> /etc/fstab"
   # Configure tty
   install -m 755 -o root -g root ${REP}/config/ttyS0.conf $TARGET_DIR/etc/init/ttyS0.conf
   chroot_deb $TARGET_DIR 'cp /lib/systemd/system/serial-getty@.service /etc/systemd/system/getty.target.wants/serial-getty@ttyS0.service'
@@ -162,7 +166,7 @@ if [[ ${DEBIAN_RELEASE} = "jessie" ]] ; then
   chroot_deb $TARGET_DIR "debconf-apt-progress -- apt-get -y install libnl-3-dev busybox-syslogd software-properties-common python-software-properties"
   chroot_deb $TARGET_DIR "apt-get -y remove rsyslog"
   # don't clear screen tty1
-  chroot_deb $TARGET_DIR 'sed -e s,"TTYVTDisallocate=yes","TTYVTDisallocate=no",g -i /etc/systemd/system/getty.target.wants/getty@tty1.service'
+  #chroot_deb $TARGET_DIR 'sed -e s,"TTYVTDisallocate=yes","TTYVTDisallocate=no",g -i /etc/systemd/system/getty.target.wants/getty@tty1.service'
   # enable root login for latest ssh on jessie
   chroot_deb $TARGET_DIR "sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
 else
@@ -175,10 +179,6 @@ chroot_deb $TARGET_DIR 'chmod 1777 /tmp/'
 chroot_deb $TARGET_DIR 'chgrp mail /var/mail/'
 chroot_deb $TARGET_DIR 'chmod g+w /var/mail/'
 chroot_deb $TARGET_DIR 'chmod g+s /var/mail/'
-
-# Install rng (Random Number Generator) to gain enough entropy for SSL,GPG key generation
-chroot_deb $TARGET_DIR "apt-get install -y --force-yes rng-tools"
-echo 'HRNGDEVICE=/dev/urandom' >> $TARGET_DIR/etc/default/rng-tools
 
 # Set hostname
 echo $DEB_HOSTNAME > $TARGET_DIR/etc/hostname
