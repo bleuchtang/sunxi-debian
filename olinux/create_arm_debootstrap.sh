@@ -117,6 +117,7 @@ chroot_deb $TARGET_DIR 'apt-get update'
 # Add usefull packages
 chroot_deb $TARGET_DIR "apt-get install -y --force-yes openssh-server ntp parted locales vim bash-completion rng-tools $PACKAGES"
 echo 'HRNGDEVICE=/dev/urandom' >> $TARGET_DIR/etc/default/rng-tools
+echo '. /etc/bash_completion' >> $TARGET_DIR/root/.bashrc
 
 # Use dhcp on boot
 cat <<EOT > $TARGET_DIR/etc/network/interfaces
