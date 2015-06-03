@@ -14,7 +14,7 @@ cat <<EOF
 
 # OPTIONS
 
-  -d		debian release (wheezy, jessie) 	(default: wheezy)
+  -d		debian release (wheezy, jessie) 	(default: jessie)
   -b		olinux board (see config_board.sh) 	(default: a20lime)
   -a		add packages to deboostrap
   -n		hostname				(default: olinux)
@@ -28,7 +28,7 @@ EOF
 exit 1
 }
 
-DEBIAN_RELEASE=wheezy
+DEBIAN_RELEASE=jessie
 TARGET_DIR=/olinux/debootstrap
 DEB_HOSTNAME=olinux
 REP=$(dirname $0)

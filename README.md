@@ -47,7 +47,7 @@ sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux bash
 ```
 
 Optional arguments:
-+ -d <name>  debian release (wheezy, jessie) 	(default: wheezy)
++ -d <name>  debian release (wheezy, jessie) 	(default: jessie)
 + -b <board> olinux board (see config_board.sh) (default: a20lime)
 + -a <packages> add packages to deboostrap
 + -n <hostname> hostname (default: olinux)
