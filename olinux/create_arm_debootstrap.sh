@@ -164,8 +164,8 @@ if [ "$DEBIAN_RELEASE" = "jessie" ] ; then
   chroot_deb $TARGET_DIR 'cp /lib/systemd/system/serial-getty@.service /etc/systemd/system/getty.target.wants/serial-getty@ttyS0.service'
   chroot_deb $TARGET_DIR 'sed -e s/"--keep-baud 115200,38400,9600"/"-L 115200"/g -i /etc/systemd/system/getty.target.wants/serial-getty@ttyS0.service'
   # specifics packets add and remove
-  chroot_deb $TARGET_DIR "debconf-apt-progress -- apt-get -y install libnl-3-dev busybox-syslogd software-properties-common python-software-properties"
-  chroot_deb $TARGET_DIR "apt-get -y remove rsyslog"
+  #chroot_deb $TARGET_DIR "debconf-apt-progress -- apt-get -y install libnl-3-dev busybox-syslogd software-properties-common python-software-properties"
+  #chroot_deb $TARGET_DIR "apt-get -y remove rsyslog"
   # don't clear screen tty1
   #chroot_deb $TARGET_DIR 'sed -e s,"TTYVTDisallocate=yes","TTYVTDisallocate=no",g -i /etc/systemd/system/getty.target.wants/getty@tty1.service'
   # enable root login for latest ssh on jessie
@@ -200,7 +200,7 @@ fi
 if [ $INSTALL_YUNOHOST ] ; then
   chroot_deb $TARGET_DIR "apt-get install -y --force-yes git"
   chroot_deb $TARGET_DIR "git clone https://github.com/YunoHost/install_script /tmp/install_script"
-  chroot_deb $TARGET_DIR "cd /tmp/install_script && ./autoinstall_yunohostv2 testing || exit 0"
+  chroot_deb $TARGET_DIR "cd /tmp/install_script && ./autoinstall_yunohostv2"
 fi
 
 # Add 'olinux' for root password and force to change it at first login
