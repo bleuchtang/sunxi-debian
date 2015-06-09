@@ -150,7 +150,7 @@ rm -f ${TARGET}/*.deb
 if [ ${CROSS} ] ; then
   make -j1 deb-pkg KBUILD_DEBARCH=armhf ARCH=arm DEBFULLNAME="$MAINTAINER" DEBEMAIL="$MAINTAINERMAIL" CROSS_COMPILE=arm-linux-gnueabihf-
 else
-  make -j1 deb-pkg KBUILD_DEBARCH=armhf DEBFULLNAME="$MAINTAINER" DEBEMAIL="$MAINTAINERMAIL" CC=/usr/bin/gcc-4.7
+  make -j1 deb-pkg KBUILD_DEBARCH=armhf DEBFULLNAME="$MAINTAINER" DEBEMAIL="$MAINTAINERMAIL" CC=/usr/bin/gcc-4.9
 fi
 
 rm -rf ${TARGET}/config/boot.scr
