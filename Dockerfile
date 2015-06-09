@@ -1,5 +1,4 @@
-FROM debian:wheezy
-#FROM emile/wheezy
+FROM debian:jessie
 MAINTAINER Émile Morel
 
 # U-boot part
@@ -14,9 +13,9 @@ RUN apt-get install --force-yes -y emdebian-archive-keyring
 RUN apt-get update
 
 # Install packages for kernel and u-boot compilation
-RUN apt-get install --force-yes -y gcc-4.7-arm-linux-gnueabihf ncurses-dev uboot-mkimage build-essential git vim libusb-1.0-0-dev pkg-config bc netpbm wget tar bzip2
+RUN apt-get install --force-yes -y gcc-4.9-arm-linux-gnueabihf ncurses-dev uboot-mkimage build-essential git vim libusb-1.0-0-dev pkg-config bc netpbm wget tar bzip2
 
-RUN ln -s /usr/bin/arm-linux-gnueabihf-gcc-4.7 /usr/bin/arm-linux-gnueabihf-gcc
+RUN ln -s /usr/bin/arm-linux-gnueabihf-gcc-4.9 /usr/bin/arm-linux-gnueabihf-gcc
 
 # Install packages for debootstrap
 RUN apt-get install --force-yes -y debootstrap dpkg-dev qemu binfmt-support qemu-user-static dpkg-cross
