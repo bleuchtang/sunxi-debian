@@ -5,6 +5,7 @@
 ######################
 
 set -e
+set -x
 
 show_usage() {
 cat <<EOF
