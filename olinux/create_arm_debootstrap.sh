@@ -184,6 +184,7 @@ chroot_deb $TARGET_DIR 'chmod g+s /var/mail/'
 
 # Set hostname
 echo $DEB_HOSTNAME > $TARGET_DIR/etc/hostname
+sed -i "1i127.0.1.1\t${DEB_HOSTNAME}" $TARGET_DIR/etc/hosts
 
 # Add firstrun and secondrun init script
 install -m 755 -o root -g root ${REP}/script/secondrun $TARGET_DIR/etc/init.d/
