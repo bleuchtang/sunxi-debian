@@ -20,10 +20,10 @@ cat <<EOF
   -a		add packages to deboostrap
   -n		hostname				(default: olinux)
   -t		target directory for debootstrap	(default: /olinux/debootstrap)
-  -i		install sunxi kernel files; you should have build them before.
   -y		install yunohost (doesn't work with cross debootstrap)
   -c		cross debootstrap
   -p		use aptcacher proxy
+  -i		set path for kernel package or install from testing (set '-i testing' to install from debian testing)
 
 EOF
 exit 1
@@ -192,11 +192,39 @@ install -m 755 -o root -g root ${REP}/script/firstrun $TARGET_DIR/etc/init.d/
 chroot_deb $TARGET_DIR "insserv firstrun >> /dev/null"
 
 if [ $INSTALL_KERNEL ] ; then
-  cp ${INSTALL_KERNEL}/*.deb $TARGET_DIR/tmp/
-  chroot_deb $TARGET_DIR 'dpkg -i /tmp/*.deb'
-  rm $TARGET_DIR/tmp/*
-  cp ${INSTALL_KERNEL}/boot.scr $TARGET_DIR/boot/
-  chroot_deb $TARGET_DIR "ln -s /boot/dtb/$DTB /boot/board.dtb"
+  if [ $INSTALL_KERNEL = 'testing' ] ; then
+    echo deb http://ftp.fr.debian.org/debian testing main > $TARGET_DIR/etc/apt/sources.list.d/testing.list
+    cat $TARGET_DIR/etc/apt/sources.list.d/testing.list 
+    cat <<EOT > $TARGET_DIR/etc/apt/preferences.d/testing
+Package: *linux-image*
+Pin: release a=testing
+Pin-Priority: 990
+Package: *u-boot*
+Pin: release a=testing
+Pin-Priority: 990
+Package: *flash-kernel*
+Pin: release a=testing
+Pin-Priority: 990
+EOT
+    # Umount proc, sys, and dev
+    umount -l $TARGET_DIR/dev/pts
+    umount -l $TARGET_DIR/dev
+    umount -l $TARGET_DIR/proc
+    umount -l $TARGET_DIR/sys  
+    chroot_deb $TARGET_DIR 'apt-get update'
+    chroot_deb $TARGET_DIR 'apt-get install linux-image-armmp flash-kernel u-boot'
+  else
+  # Umount proc, sys, and dev
+  umount -l $TARGET_DIR/dev/pts
+  umount -l $TARGET_DIR/dev
+  umount -l $TARGET_DIR/proc
+  umount -l $TARGET_DIR/sys  
+    cp ${INSTALL_KERNEL}/*.deb $TARGET_DIR/tmp/
+    chroot_deb $TARGET_DIR 'dpkg -i /tmp/*.deb'
+    rm $TARGET_DIR/tmp/*
+    cp ${INSTALL_KERNEL}/boot.scr $TARGET_DIR/boot/
+    chroot_deb $TARGET_DIR "ln -s /boot/dtb/$DTB /boot/board.dtb"
+  fi
 fi
 
 if [ $INSTALL_YUNOHOST ] ; then
@@ -221,8 +249,4 @@ if [ ${APTCACHER} ] ; then
   rm $TARGET_DIR/etc/apt/apt.conf.d/01proxy
 fi
 
-# Umount proc, sys, and dev
-umount -l $TARGET_DIR/dev/pts
-umount -l $TARGET_DIR/dev
-umount -l $TARGET_DIR/proc
-umount -l $TARGET_DIR/sys
+
