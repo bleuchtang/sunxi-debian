@@ -191,10 +191,16 @@ install -m 755 -o root -g root ${REP}/script/secondrun $TARGET_DIR/etc/init.d/
 install -m 755 -o root -g root ${REP}/script/firstrun $TARGET_DIR/etc/init.d/
 chroot_deb $TARGET_DIR "insserv firstrun >> /dev/null"
 
+if [ $INSTALL_YUNOHOST ] ; then
+  chroot_deb $TARGET_DIR "apt-get install -y --force-yes git"
+  chroot_deb $TARGET_DIR "git clone https://github.com/YunoHost/install_script /tmp/install_script"
+  chroot_deb $TARGET_DIR "cd /tmp/install_script && ./autoinstall_yunohostv2"
+fi
+
 if [ $INSTALL_KERNEL ] ; then
   if [ $INSTALL_KERNEL = 'testing' ] ; then
     echo deb http://ftp.fr.debian.org/debian testing main > $TARGET_DIR/etc/apt/sources.list.d/testing.list
-    cat $TARGET_DIR/etc/apt/sources.list.d/testing.list 
+    cat $TARGET_DIR/etc/apt/sources.list.d/testing.list
     cat <<EOT > $TARGET_DIR/etc/apt/preferences.d/testing
 Package: *linux-image*
 Pin: release a=testing
@@ -210,27 +216,24 @@ EOT
     umount -l $TARGET_DIR/dev/pts
     umount -l $TARGET_DIR/dev
     umount -l $TARGET_DIR/proc
-    umount -l $TARGET_DIR/sys  
+    umount -l $TARGET_DIR/sys
     chroot_deb $TARGET_DIR 'apt-get update'
-    chroot_deb $TARGET_DIR 'apt-get install linux-image-armmp flash-kernel u-boot'
+    mkdir $TARGET_DIR/etc/flash-kernel
+    echo $FLASH_KERNEL > $TARGET_DIR/etc/flash-kernel/machine
+    echo 'LINUX_KERNEL_CMDLINE="console=tty0 hdmi.audio=EDID:0 disp.screen0_output_mode=EDID:1280x720p60 root=/dev/mmcblk0p1 rootwait sunxi_ve_mem_reserve=0 sunxi_g2d_mem_reserve=0 sunxi_no_mali_mem_reserve sunxi_fb_mem_reserve=0 panic=10 loglevel=6 consoleblank=0"' > $TARGET_DIR/etc/default/flash-kernel
+    chroot_deb $TARGET_DIR 'apt-get install -y --force-yes linux-image-armmp flash-kernel u-boot-sunxi u-boot-tools'
   else
-  # Umount proc, sys, and dev
-  umount -l $TARGET_DIR/dev/pts
-  umount -l $TARGET_DIR/dev
-  umount -l $TARGET_DIR/proc
-  umount -l $TARGET_DIR/sys  
     cp ${INSTALL_KERNEL}/*.deb $TARGET_DIR/tmp/
     chroot_deb $TARGET_DIR 'dpkg -i /tmp/*.deb'
     rm $TARGET_DIR/tmp/*
     cp ${INSTALL_KERNEL}/boot.scr $TARGET_DIR/boot/
     chroot_deb $TARGET_DIR "ln -s /boot/dtb/$DTB /boot/board.dtb"
+    # Umount proc, sys, and dev
+    umount -l $TARGET_DIR/dev/pts
+    umount -l $TARGET_DIR/dev
+    umount -l $TARGET_DIR/proc
+    umount -l $TARGET_DIR/sys
   fi
-fi
-
-if [ $INSTALL_YUNOHOST ] ; then
-  chroot_deb $TARGET_DIR "apt-get install -y --force-yes git"
-  chroot_deb $TARGET_DIR "git clone https://github.com/YunoHost/install_script /tmp/install_script"
-  chroot_deb $TARGET_DIR "cd /tmp/install_script && ./autoinstall_yunohostv2"
 fi
 
 # Add 'olinux' for root password and force to change it at first login
