@@ -33,6 +33,7 @@ DEBIAN_RELEASE=jessie
 TARGET_DIR=/olinux/debootstrap
 DEB_HOSTNAME=olinux
 REP=$(dirname $0)
+APT='apt-get install -y --force-yes'
 
 while getopts ":a:b:d:n:t:i:ycp" opt; do
   case $opt in
@@ -77,6 +78,14 @@ chroot_deb (){
   LC_ALL=C LANGUAGE=C LANG=C chroot $1 /bin/bash -c "$2"
 }
 
+umount_dir (){
+    # Umount proc, sys, and dev
+    umount -l "$1"/dev/pts
+    umount -l "$1"/dev
+    umount -l "$1"/proc
+    umount -l "$1"/sys
+}
+
 if [ ${CROSS} ] ; then
   # Debootstrap
   mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
@@ -116,7 +125,7 @@ fi
 chroot_deb $TARGET_DIR 'apt-get update'
 
 # Add useful packages
-chroot_deb $TARGET_DIR "apt-get install -y --force-yes openssh-server ntp parted locales vim-nox bash-completion rng-tools $PACKAGES"
+chroot_deb $TARGET_DIR "$APT openssh-server ntp parted locales vim-nox bash-completion rng-tools $PACKAGES"
 echo 'HRNGDEVICE=/dev/urandom' >> $TARGET_DIR/etc/default/rng-tools
 echo '. /etc/bash_completion' >> $TARGET_DIR/root/.bashrc
 
@@ -192,47 +201,41 @@ install -m 755 -o root -g root ${REP}/script/firstrun $TARGET_DIR/etc/init.d/
 chroot_deb $TARGET_DIR "insserv firstrun >> /dev/null"
 
 if [ $INSTALL_YUNOHOST ] ; then
-  chroot_deb $TARGET_DIR "apt-get install -y --force-yes git"
+  chroot_deb $TARGET_DIR "$APT git"
   chroot_deb $TARGET_DIR "git clone https://github.com/YunoHost/install_script /tmp/install_script"
   chroot_deb $TARGET_DIR "cd /tmp/install_script && ./autoinstall_yunohostv2"
 fi
 
 if [ $INSTALL_KERNEL ] ; then
   if [ $INSTALL_KERNEL = 'testing' ] ; then
-    echo deb http://ftp.fr.debian.org/debian testing main > $TARGET_DIR/etc/apt/sources.list.d/testing.list
-    cat $TARGET_DIR/etc/apt/sources.list.d/testing.list
-    cat <<EOT > $TARGET_DIR/etc/apt/preferences.d/testing
-Package: *linux-image*
-Pin: release a=testing
+    echo 'deb http://ftp.fr.debian.org/debian testing main' > $TARGET_DIR/etc/apt/sources.list.d/testing.list
+    cat <<EOT > $TARGET_DIR/etc/apt/preferences.d/kernel-testing
+Package: linux-image*
+Pin: release o=Debian,a=testing
 Pin-Priority: 990
-Package: *u-boot*
-Pin: release a=testing
+
+Package: u-boot*
+Pin: release o=Debian,a=testing
 Pin-Priority: 990
-Package: *flash-kernel*
-Pin: release a=testing
+
+Package: flash-kernel*
+Pin: release o=Debian,a=testing
 Pin-Priority: 990
 EOT
-    # Umount proc, sys, and dev
-    umount -l $TARGET_DIR/dev/pts
-    umount -l $TARGET_DIR/dev
-    umount -l $TARGET_DIR/proc
-    umount -l $TARGET_DIR/sys
+
+    umount_dir $TARGET_DIR
     chroot_deb $TARGET_DIR 'apt-get update'
     mkdir $TARGET_DIR/etc/flash-kernel
     echo $FLASH_KERNEL > $TARGET_DIR/etc/flash-kernel/machine
     echo 'LINUX_KERNEL_CMDLINE="console=tty0 hdmi.audio=EDID:0 disp.screen0_output_mode=EDID:1280x720p60 root=/dev/mmcblk0p1 rootwait sunxi_ve_mem_reserve=0 sunxi_g2d_mem_reserve=0 sunxi_no_mali_mem_reserve sunxi_fb_mem_reserve=0 panic=10 loglevel=6 consoleblank=0"' > $TARGET_DIR/etc/default/flash-kernel
-    chroot_deb $TARGET_DIR 'apt-get install -y --force-yes linux-image-armmp flash-kernel u-boot-sunxi u-boot-tools'
+    chroot_deb $TARGET_DIR "$APT linux-image-armmp flash-kernel u-boot-sunxi u-boot-tools"
   else
     cp ${INSTALL_KERNEL}/*.deb $TARGET_DIR/tmp/
     chroot_deb $TARGET_DIR 'dpkg -i /tmp/*.deb'
     rm $TARGET_DIR/tmp/*
     cp ${INSTALL_KERNEL}/boot.scr $TARGET_DIR/boot/
     chroot_deb $TARGET_DIR "ln -s /boot/dtb/$DTB /boot/board.dtb"
-    # Umount proc, sys, and dev
-    umount -l $TARGET_DIR/dev/pts
-    umount -l $TARGET_DIR/dev
-    umount -l $TARGET_DIR/proc
-    umount -l $TARGET_DIR/sys
+    umount_dir $TARGET_DIR
   fi
 fi
 
