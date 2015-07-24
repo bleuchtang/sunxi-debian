@@ -78,6 +78,14 @@ chroot_deb (){
   LC_ALL=C LANGUAGE=C LANG=C chroot $1 /bin/bash -c "$2"
 }
 
+umount_dir (){
+    # Umount proc, sys, and dev
+    umount -l "$1"/dev/pts
+    umount -l "$1"/dev
+    umount -l "$1"/proc
+    umount -l "$1"/sys
+}
+
 if [ ${CROSS} ] ; then
   # Debootstrap
   mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
@@ -213,11 +221,8 @@ Package: *flash-kernel*
 Pin: release a=testing
 Pin-Priority: 990
 EOT
-    # Umount proc, sys, and dev
-    umount -l $TARGET_DIR/dev/pts
-    umount -l $TARGET_DIR/dev
-    umount -l $TARGET_DIR/proc
-    umount -l $TARGET_DIR/sys
+
+    umount_dir $TARGET_DIR
     chroot_deb $TARGET_DIR 'apt-get update'
     mkdir $TARGET_DIR/etc/flash-kernel
     echo $FLASH_KERNEL > $TARGET_DIR/etc/flash-kernel/machine
@@ -229,11 +234,7 @@ EOT
     rm $TARGET_DIR/tmp/*
     cp ${INSTALL_KERNEL}/boot.scr $TARGET_DIR/boot/
     chroot_deb $TARGET_DIR "ln -s /boot/dtb/$DTB /boot/board.dtb"
-    # Umount proc, sys, and dev
-    umount -l $TARGET_DIR/dev/pts
-    umount -l $TARGET_DIR/dev
-    umount -l $TARGET_DIR/proc
-    umount -l $TARGET_DIR/sys
+    umount_dir $TARGET_DIR
   fi
 fi
 
