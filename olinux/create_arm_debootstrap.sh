@@ -208,17 +208,18 @@ fi
 
 if [ $INSTALL_KERNEL ] ; then
   if [ $INSTALL_KERNEL = 'testing' ] ; then
-    echo deb http://ftp.fr.debian.org/debian testing main > $TARGET_DIR/etc/apt/sources.list.d/testing.list
-    cat $TARGET_DIR/etc/apt/sources.list.d/testing.list
-    cat <<EOT > $TARGET_DIR/etc/apt/preferences.d/testing
-Package: *linux-image*
-Pin: release a=testing
+    echo 'deb http://ftp.fr.debian.org/debian testing main' > $TARGET_DIR/etc/apt/sources.list.d/testing.list
+    cat <<EOT > $TARGET_DIR/etc/apt/preferences.d/kernel-testing
+Package: linux-image*
+Pin: release o=Debian,a=testing
 Pin-Priority: 990
-Package: *u-boot*
-Pin: release a=testing
+
+Package: u-boot*
+Pin: release o=Debian,a=testing
 Pin-Priority: 990
-Package: *flash-kernel*
-Pin: release a=testing
+
+Package: flash-kernel*
+Pin: release o=Debian,a=testing
 Pin-Priority: 990
 EOT
 
