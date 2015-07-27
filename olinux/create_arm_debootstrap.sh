@@ -209,18 +209,26 @@ fi
 if [ $INSTALL_KERNEL ] ; then
   if [ $INSTALL_KERNEL = 'testing' ] ; then
     echo 'deb http://ftp.fr.debian.org/debian testing main' > $TARGET_DIR/etc/apt/sources.list.d/testing.list
-    cat <<EOT > $TARGET_DIR/etc/apt/preferences.d/kernel-testing
+    # Install linux-image, u-boot and flash-kernel from testing (Debian strech)
+    cat <<EOT > ${TARGET_DIR}/etc/apt/preferences.d/kernel-testing
 Package: linux-image*
 Pin: release o=Debian,a=testing
-Pin-Priority: 990
+Pin-Priority: 100
 
 Package: u-boot*
 Pin: release o=Debian,a=testing
-Pin-Priority: 990
+Pin-Priority: 100
 
 Package: flash-kernel*
 Pin: release o=Debian,a=testing
-Pin-Priority: 990
+Pin-Priority: 100
+EOT
+
+    # And other packages from stable
+    cat <<EOT > ${TARGET_DIR}/etc/apt/preferences.d/stable
+Package: *
+Pin: release o=Debian,a=stable
+Pin-Priority: 900
 EOT
 
     umount_dir $TARGET_DIR
