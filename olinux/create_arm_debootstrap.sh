@@ -122,6 +122,29 @@ Acquire::http::Proxy "http://localhost:3142";
 EOT
 fi
 
+if [ $INSTALL_KERNEL = 'testing' ] ; then
+  echo 'deb http://ftp.fr.debian.org/debian testing main' > $TARGET_DIR/etc/apt/sources.list.d/testing.list
+  # Install linux-image, u-boot and flash-kernel from testing (Debian strech)
+  cat <<EOT > ${TARGET_DIR}/etc/apt/preferences.d/kernel-testing
+Package: linux-image*
+Pin: release o=Debian,a=testing
+Pin-Priority: 990
+
+Package: u-boot*
+Pin: release o=Debian,a=testing
+Pin-Priority: 990
+
+Package: flash-kernel*
+Pin: release o=Debian,a=testing
+Pin-Priority: 990
+
+Package: *
+Pin: release o=Debian,a=testing
+Pin-Priority: 50
+EOT
+fi
+
+
 chroot_deb $TARGET_DIR 'apt-get update'
 
 # Add useful packages
@@ -208,27 +231,11 @@ fi
 
 if [ $INSTALL_KERNEL ] ; then
   if [ $INSTALL_KERNEL = 'testing' ] ; then
-    echo 'deb http://ftp.fr.debian.org/debian testing main' > $TARGET_DIR/etc/apt/sources.list.d/testing.list
-    cat <<EOT > $TARGET_DIR/etc/apt/preferences.d/kernel-testing
-Package: linux-image*
-Pin: release o=Debian,a=testing
-Pin-Priority: 990
-
-Package: u-boot*
-Pin: release o=Debian,a=testing
-Pin-Priority: 990
-
-Package: flash-kernel*
-Pin: release o=Debian,a=testing
-Pin-Priority: 990
-EOT
-
     umount_dir $TARGET_DIR
-    chroot_deb $TARGET_DIR 'apt-get update'
     mkdir $TARGET_DIR/etc/flash-kernel
     echo $FLASH_KERNEL > $TARGET_DIR/etc/flash-kernel/machine
     echo 'LINUX_KERNEL_CMDLINE="console=tty0 hdmi.audio=EDID:0 disp.screen0_output_mode=EDID:1280x720p60 root=/dev/mmcblk0p1 rootwait sunxi_ve_mem_reserve=0 sunxi_g2d_mem_reserve=0 sunxi_no_mali_mem_reserve sunxi_fb_mem_reserve=0 panic=10 loglevel=6 consoleblank=0"' > $TARGET_DIR/etc/default/flash-kernel
-    chroot_deb $TARGET_DIR "$APT -t testing linux-image-armmp flash-kernel u-boot-sunxi u-boot-tools"
+    chroot_deb $TARGET_DIR "$APT linux-image-armmp flash-kernel u-boot-sunxi u-boot-tools"
   else
     cp ${INSTALL_KERNEL}/*.deb $TARGET_DIR/tmp/
     chroot_deb $TARGET_DIR 'dpkg -i /tmp/*.deb'
