@@ -152,6 +152,11 @@ echo "- Write sunxi-with-spl"
 dd if=${UBOOT_FILE} of=${DEVICE} bs=1024 seek=8 >/dev/null 2>&1
 sync
 
+if [ "${DEVICE}" = "img" ] ; then
+  echo "- Sfill"
+  sfill -z -l -l -f $MNT
+fi
+
 echo "- Umount"
 if [ "${TYPE}" = "loop" ] ; then
   echo "- Sfill"
