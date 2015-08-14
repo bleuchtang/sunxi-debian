@@ -34,27 +34,22 @@ case "$1" in
     echo ""
     rm -f /etc/ssh/ssh_host*
     dpkg-reconfigure openssh-server 
-    echo ""
-    echo "############################"
-    echo "# Expanding root partition #"
-    echo "############################"
-    echo ""
-    (echo d; echo n; echo p; echo 1; echo ; echo; echo w) | fdisk /dev/mmcblk0
-    /sbin/insserv secondrun 
-    echo ""
-    echo "##################"
-    echo "# Running depmod #"
-    echo "##################"
-    echo ""
-    /sbin/depmod -a
-    echo ""
-    echo "##################"
-    echo "#     Reboot     #"
-    echo "##################"
-    echo ""
+    # do not resize if root is crypted 
     /sbin/insserv -r firstrun
-    /sbin/insserv secondrun
-    /sbin/reboot
+    if [ ! -e /etc/crypttab ]; then
+      echo ""
+      echo "############################"
+      echo "# Expanding root partition #"
+      echo "############################"
+      (echo d; echo n; echo p; echo 1; echo ; echo; echo w) | fdisk /dev/mmcblk0
+      /sbin/insserv secondrun
+      echo ""
+      echo "##################"
+      echo "#     Reboot     #"
+      echo "##################"
+      echo ""
+      /sbin/reboot
+    fi
     ;;
   *)
     echo "Usage: $N {start}" >&2
