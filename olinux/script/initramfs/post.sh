@@ -12,6 +12,6 @@ for i in $(seq 10); do
   [ -f /dev/mapper/root ] && exit 0
 done
 
-cat index.html | sed '/TPL:ERROR/d'
+cat ../index.html | sed '/TPL:ERROR/d'
 
 exit 0
