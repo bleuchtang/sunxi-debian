@@ -270,11 +270,13 @@ EOT
       cp /olinux/script/initramfs/httpd $TARGET_DIR/etc/initramfs-tools/hooks/httpd
       cp /olinux/script/initramfs/httpd_start $TARGET_DIR/etc/initramfs-tools/scripts/local-top/httpd
       cp /olinux/script/initramfs/httpd_stop $TARGET_DIR/etc/initramfs-tools/scripts/local-bottom/httpd
-      cp /olinux/script/initramfs/stunnel $TARGET_DIR/etc/initramfs-tools/hooks/httpd
-      cp /olinux/script/initramfs/stunnel_start $TARGET_DIR/etc/initramfs-tools/scripts/local-top/httpd
-      cp /olinux/script/initramfs/stunnel_stop $TARGET_DIR/etc/initramfs-tools/scripts/local-bottom/httpd
+      cp /olinux/script/initramfs/stunnel $TARGET_DIR/etc/initramfs-tools/hooks/stunnel
+      cp /olinux/script/initramfs/stunnel.conf $TARGET_DIR/etc/initramfs-tools/
+      cp /olinux/script/initramfs/stunnel_start $TARGET_DIR/etc/initramfs-tools/scripts/local-top/stunnel
+      cp /olinux/script/initramfs/stunnel_stop $TARGET_DIR/etc/initramfs-tools/scripts/local-bottom/stunnel
       mkdir -p $TARGET_DIR/etc/initramfs-tools/root/www/cgi-bin
       cp /olinux/script/initramfs/index.html $TARGET_DIR/etc/initramfs-tools/root/www/
+      cp /olinux/script/initramfs/unicorn.gif $TARGET_DIR/etc/initramfs-tools/root/www/
       cp /olinux/script/initramfs/post.sh $TARGET_DIR/etc/initramfs-tools/root/www/cgi-bin/
       chroot_deb $TARGET_DIR "update-initramfs -u -k all"
     fi
