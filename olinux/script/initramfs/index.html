@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Root Partition Unlocking</title>
+  <title>Hard Drive Unlocking</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
   <style>
@@ -26,6 +26,8 @@
       padding: 5px 17px;
       font-weight: bold;
       border-radius: 5px;
+      text-shadow: 1px 1px rgba(0,0,0,.3);
+      font-variant: small-caps;
     }
 
     input {
@@ -39,15 +41,55 @@
     }
 
     input[type=submit] {
-      padding: 5px 15px;
+      padding: 10px 20px;
       font-weight: bold;
       background-color: #fff;
-      border-width: 4px 0;
+      border-width: 0;
+      font-size: 20px;
+    }
+
+    input[type=submit]:hover {
+      background-color: #6f1465;
+      color: #fff;
+      cursor: pointer;
     }
 
     #error {
       color: #ca0000;
       font-weight: bold;
+    }
+
+    label span {
+      cursor: pointer;
+    }
+
+    .loader {
+      content: "";
+      display: none;
+      width: 0;
+      height: 0;
+      border: solid 25px;
+      border-radius: 5em;
+      border-color: #ff619c #8f9cff #f6ff60 #67ff00 ;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes fade {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
     }
   </style>
 
@@ -72,36 +114,44 @@
         errorColorsIndex = (errorColorsIndex + 1) % errorColors.length;
       }, 100);
     }
+
+    function showLoader() {
+      document.getElementById('unlock').style.display = 'none';
+      document.getElementById('loader').style.display = 'inline-block';
+
+    }
   </script>
 </head>
 
 <body onload="beautifulError(); focusText()">
   <img src="unicorn.gif" alt="Beautiful Unicorn">
-  <form method="post" action="/cgi-bin/post.sh">
+  <form method="post" onsubmit="showLoader()" action="/cgi-bin/post.sh">
     <fieldset>
-      <legend>Passphrase</legend>
+      <legend>Hard Drive Locked</legend>
       <!-- TPL:ERROR
       <p id="error">
         Wrong passphrase. Try again, Dude!
       </p>
       TPL:ERROR -->
 
-      <label>
-        <p>Enter luks passphrase to unlock the root partition:</p>
+      <p>
+        <label for="passphrase">
+          Enter your passphrase to unlock the hard drive:
+        </label>
+      </p>
 
-        <input type="password" name="passphrase" id="passphrase" />
-      </label>
+      <input type="password" name="passphrase" id="passphrase" />
 
       <p>
         <label>
           <input type="checkbox" onclick="showPassword(this)" />
-          Show passphrase
+          <span>Show passphrase</span>
         </label>
       </p>
     </fieldset>
 
-    <input type="submit" value="Unlock" />
+    <input type="submit" id="unlock" value="Unlock" onclick="showLoader()" />
+    <div class="loader" id="loader"></div>
   </form>
-  </div>
 </body>
 </html>
