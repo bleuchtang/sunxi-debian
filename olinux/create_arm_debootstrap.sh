@@ -260,7 +260,7 @@ EOT
     else
       echo 'LINUX_KERNEL_CMDLINE="console=tty0 hdmi.audio=EDID:0 disp.screen0_output_mode=EDID:1280x720p60 root=/dev/mmcblk0p1 rootwait sunxi_ve_mem_reserve=0 sunxi_g2d_mem_reserve=0 sunxi_no_mali_mem_reserve sunxi_fb_mem_reserve=0 panic=10 loglevel=6 consoleblank=0"' > $TARGET_DIR/etc/default/flash-kernel
     fi
-    chroot_deb $TARGET_DIR "$APT linux-image-armmp flash-kernel u-boot-sunxi u-boot-tools $PACKAGES"
+    chroot_deb $TARGET_DIR "export DEBIAN_FRONTEND=noninteractive $APT linux-image-armmp flash-kernel u-boot-sunxi u-boot-tools $PACKAGES"
     if [ -n $ENCRYPT ] ; then
       echo 'root	/dev/mmcblk0p2	none	luks' >> $TARGET_DIR/etc/crypttab
       echo '/dev/mapper/root	/	ext4	defaults	0	1' > $TARGET_DIR/etc/fstab

@@ -14,6 +14,7 @@ case "$1" in
 esac
 
 ip l set lo up
+ip a a fe80::42:babe/128 dev eth0
 /sbin/httpd -p 127.0.0.1:80 -vv -h /root/www
 
 exit 0
