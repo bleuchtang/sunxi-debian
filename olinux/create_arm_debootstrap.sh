@@ -145,6 +145,7 @@ iface lo inet loopback
 
 allow-hotplug eth0
 iface eth0 inet dhcp
+  post-up ip a a fe80::42:babe/128 dev eth0
 
 allow-hotplug usb0
 iface usb0 inet dhcp
