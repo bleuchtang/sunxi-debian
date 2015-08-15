@@ -1,19 +1,107 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Unlock root partition</title>
-  </head>
-  
-  <body>
-    <div style="text-align: center;"><IMG SRC="./unicorn.gif" ALT="image">
-    <form name="form1" method="post" action="/cgi-bin/post.sh">
-      <p><!-- <TPL:MESSAGE> -->Enter luks passphrase to unlock the main partition
-        <input name="Text_Field" type="password" id="Text_Field">
-      </p>
-      <p>
-      <input type="submit" name="Submit" value="Unlock">
-      </p>
-    </form>
-    </div>
-  </body>
-</html>
+<head>
+  <title>Root Partition Unlocking</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
+  <style>
+    body {
+      text-align: center;
+      font-family: sans;
+      background-color: #f2c8ee;
+      padding-top: 15px;
+    }
+
+    fieldset {
+      margin: 10px auto 30px;
+      padding: 30px;
+      width: 50%;
+      background-color: #fff;
+      border: 0;
+      border-radius: 15px;
+    }
+
+    legend {
+      background-color: #fff;
+      padding: 5px 17px;
+      font-weight: bold;
+      border-radius: 5px;
+    }
+
+    input {
+      border: 1px solid #6f1465;
+      padding: 5px;
+      font-size: 1em;
+      color: #c70fb3;
+      text-align: center;
+      background-color: #fcf2fb;
+      border-radius: 5px;
+    }
+
+    input[type=submit] {
+      padding: 5px 15px;
+      font-weight: bold;
+      background-color: #fff;
+      border-width: 4px 0;
+    }
+
+    #error {
+      color: #ca0000;
+      font-weight: bold;
+    }
+  </style>
+
+  <script>
+    var errorColors = [ 'ff619c', 'ffc160', 'f6ff60', '67ff00', '57f6fc', '8f9cff', 'fc57ee' ];
+    var errorColorsIndex = 0;
+
+    function showPassword(chk) {
+      var pwd = document.getElementById('passphrase');
+      pwd.type = chk.checked ? 'text' : 'password';
+    }
+
+    function focusText() {
+      var pwd = document.getElementById('passphrase');
+      pwd.focus();
+    }
+
+    function beautifulError() {
+      setInterval(function () {
+        var error = document.getElementById('error');
+        error.style.color = '#' + errorColors[errorColorsIndex];
+        errorColorsIndex = (errorColorsIndex + 1) % errorColors.length;
+      }, 100);
+    }
+  </script>
+</head>
+
+<body onload="beautifulError(); focusText()">
+  <img src="unicorn.gif" alt="Beautiful Unicorn">
+  <form method="post" action="/cgi-bin/post.sh">
+    <fieldset>
+      <legend>Passphrase</legend>
+      <!-- TPL:ERROR
+      <p id="error">
+        Wrong passphrase. Try again, Dude!
+      </p>
+      TPL:ERROR -->
+
+      <label>
+        <p>Enter luks passphrase to unlock the root partition:</p>
+
+        <input type="password" name="passphrase" id="passphrase" />
+      </label>
+
+      <p>
+        <label>
+          <input type="checkbox" onclick="showPassword(this)" />
+          Show passphrase
+        </label>
+      </p>
+    </fieldset>
+
+    <input type="submit" value="Unlock" />
+  </form>
+  </div>
+</body>
+</html>
