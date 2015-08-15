@@ -75,7 +75,7 @@
     }
 
     #unlocked {
-      display: none;
+      display: none; /* TPL:PASSPHRASE */
       font-size: 4em;
       font-weight: bold;
     }
@@ -93,6 +93,10 @@
       100% {
         transform: rotate(360deg);
       }
+    }
+
+    #maintop {
+      display: none;
     }
   </style>
 
@@ -161,8 +165,13 @@
 </head>
 
 <body onload="beautifulCycle(); focusText()">
+  <!-- TPL:PASSPHRASE
+  <div id="maintop">
+  TPL:PASSPHRASE -->
+  
   <div id="main">
     <img src="unicorn.gif" alt="Beautiful Unicorn">
+
     <form method="post" id="form" action="/cgi-bin/post.sh" onsubmit="return submitForm()">
       <fieldset>
         <legend>Hard Drive Locked</legend>
@@ -190,13 +199,16 @@
   
       <input type="submit" id="unlock" value="Unlock" onclick="showLoader()" />
       <div class="loader" id="loader"></div>
-    </div>
+    </form>
+  </div>
 
-    <div id="unlocked" class="beautiful">
-      <img src="unlocked.png" alt="Unlocked" />
+  <!-- TPL:PASSPHRASE
+  </div>
+  TPL:PASSPHRASE -->
 
-      Unlocked!
-    </div>
-  </form>
+  <div id="unlocked" class="beautiful">
+    <img src="unlocked.gif" alt="Unlocked" />
+    Unlocked!
+  </div>
 </body>
 </html>
