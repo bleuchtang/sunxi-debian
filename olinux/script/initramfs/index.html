@@ -108,6 +108,10 @@
         transform: rotate(360deg);
       }
     }
+
+    #maintop {
+      display: none;
+    }
   </style>
 
   <script>
@@ -216,7 +220,8 @@
   
       <input type="submit" id="unlock" value="Unlock" onclick="showLoader()" />
       <div class="loader" id="loader"></div>
-    </div>
+    </form>
+  </div>
 
   <div id="unlocked" class="beautiful">
     <img src="/unlocked.gif" alt="Unlocked" />
