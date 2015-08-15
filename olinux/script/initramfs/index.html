@@ -71,31 +71,34 @@
       border: solid 25px;
       border-radius: 5em;
       border-color: #ff619c #8f9cff #f6ff60 #67ff00 ;
-      animation: spin 1s linear infinite;
+      animation: spin .3s linear infinite;
+    }
+
+    #unlocked {
+      display: none;
+      font-size: 4em;
+      font-weight: bold;
+    }
+
+    #unlocked img {
+      display: block;
+      margin: .5em auto;
     }
 
     @keyframes spin {
       0% {
         transform: rotate(0deg);
       }
+
       100% {
         transform: rotate(360deg);
-      }
-    }
-
-    @keyframes fade {
-      0% {
-        opacity: 0;
-      }
-      100% {
-        opacity: 1;
       }
     }
   </style>
 
   <script>
-    var errorColors = [ 'ff619c', 'ffc160', 'f6ff60', '67ff00', '57f6fc', '8f9cff', 'fc57ee' ];
-    var errorColorsIndex = 0;
+    var beautifulColors = [ 'ff619c', 'ffc160', 'f6ff60', '67ff00', '57f6fc', '8f9cff', 'fc57ee' ];
+    var beautifulColorsIndex = 0;
 
     function showPassword(chk) {
       var pwd = document.getElementById('passphrase');
@@ -107,51 +110,93 @@
       pwd.focus();
     }
 
-    function beautifulError() {
-      setInterval(function () {
-        var error = document.getElementById('error');
-        error.style.color = '#' + errorColors[errorColorsIndex];
-        errorColorsIndex = (errorColorsIndex + 1) % errorColors.length;
-      }, 100);
+    function beautifulCycle() {
+      if(document.getElementsByClassName('beautiful')) {
+        setInterval(function () {
+          var beautifuls = document.getElementsByClassName('beautiful');
+
+          for(var i = 0; i < beautifuls.length; i++) {
+            beautifuls[i].style.color = '#' + beautifulColors[beautifulColorsIndex];
+          }
+
+          beautifulColorsIndex = (beautifulColorsIndex + 1) % beautifulColors.length;
+        }, 100);
+      }
     }
 
     function showLoader() {
       document.getElementById('unlock').style.display = 'none';
       document.getElementById('loader').style.display = 'inline-block';
-
     }
+
+    function unlocked() {
+      document.getElementById('main').style.display = 'none';
+      document.getElementById('unlocked').style.display = 'inline';
+    }
+
+    function submitForm() {
+      showLoader();
+
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open('POST', document.getElementById('form').action, true);
+
+      xmlHttp.onreadystatechange = function() {
+        if(xmlHttp.readyState == 4) {
+          if(xmlHttp.status == 200) {
+            unlocked();
+
+          } else {
+
+            alert('An error occured.');
+          }
+        }
+      }
+
+      xmlHttp.send('passphrase=' + document.getElementById('passphrase').value);
+
+      return false;
+    }
+
   </script>
 </head>
 
-<body onload="beautifulError(); focusText()">
-  <img src="unicorn.gif" alt="Beautiful Unicorn">
-  <form method="post" onsubmit="showLoader()" action="/cgi-bin/post.sh">
-    <fieldset>
-      <legend>Hard Drive Locked</legend>
-      <!-- TPL:ERROR
-      <p id="error">
-        Wrong passphrase. Try again, Dude!
-      </p>
-      TPL:ERROR -->
+<body onload="beautifulCycle(); focusText()">
+  <div id="main">
+    <img src="unicorn.gif" alt="Beautiful Unicorn">
+    <form method="post" id="form" action="/cgi-bin/post.sh" onsubmit="return submitForm()">
+      <fieldset>
+        <legend>Hard Drive Locked</legend>
+        <!-- TPL:ERROR
+        <p id="error" class="beautiful">
+          Wrong passphrase. Try again, Dude!
+        </p>
+        TPL:ERROR -->
+  
+        <p>
+          <label for="passphrase">
+            Enter your passphrase to unlock the hard drive:
+          </label>
+        </p>
+  
+        <input type="password" name="passphrase" id="passphrase" />
+  
+        <p>
+          <label>
+            <input type="checkbox" onclick="showPassword(this)" />
+            <span>Show passphrase</span>
+          </label>
+        </p>
+      </fieldset>
+  
+      <input type="submit" id="unlock" value="Unlock" onclick="showLoader()" />
+      <div class="loader" id="loader"></div>
+    </div>
 
-      <p>
-        <label for="passphrase">
-          Enter your passphrase to unlock the hard drive:
-        </label>
-      </p>
+    <div id="unlocked" class="beautiful">
+      <img src="unlocked.png" alt="Unlocked" />
 
-      <input type="password" name="passphrase" id="passphrase" />
-
-      <p>
-        <label>
-          <input type="checkbox" onclick="showPassword(this)" />
-          <span>Show passphrase</span>
-        </label>
-      </p>
-    </fieldset>
-
-    <input type="submit" id="unlock" value="Unlock" onclick="showLoader()" />
-    <div class="loader" id="loader"></div>
+      Unlocked!
+    </div>
   </form>
 </body>
 </html>
