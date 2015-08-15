@@ -56,6 +56,7 @@ Optional arguments:
 + -y (bool) install yunohost (doesn't work with cross debootstrap)
 + -c (bool) cross debootstrap
 + -p (bool) use aptcacher proxy
++ -e (bool) configure debootstrap for future root partition encryption
 
 # Install on a SD card
 
@@ -86,6 +87,22 @@ Find IP and ssh on it! (password: olinux)
 ```shell
 ssh root@mybox
 ```
+
+# Build SD with encrypted root
+
+Build debootsrap with additionnal packages and initramfs script:
+
+```shell
+sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux bash /olinux/create_arm_debootstrap.sh -i olinux/sunxi -c -i testing -e
+```
+
+Prepare your SD card with root encrypted:
+
+```shell
+sudo bash olinux/create_device.sh -d /dev/sdc -b olinux/debootstrap/ -u olinux/debootstrap/usr/lib/u-boot/A20-OLinuXino-Lime/u-boot-sunxi-with-spl.bin -e
+```
+
+Now, when the olimex boot, you can connect over https on the ip of the board and unlock the disk.
 
 # Some links/tips:
 
