@@ -14,6 +14,6 @@ for i in $(seq 10); do
   fi
 done
 
-cat ../index.html | sed '/TPL:ERROR/d'
+cat ../index.html | sed 's/caticorn/&_failed/' | sed '/TPL:ERROR/d'
 
 exit 0
