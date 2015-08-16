@@ -8,7 +8,7 @@
     body {
       text-align: center;
       font-family: sans;
-      background-color: #f2c8ee;
+      background-color: #d5a6d9;
       padding-top: 15px;
     }
 
@@ -115,7 +115,7 @@
   </style>
 
   <script>
-    var beautifulColors = [ 'ff619c', 'ffc160', 'f6ff60', '67ff00', '57f6fc', '8f9cff', 'fc57ee' ];
+    var beautifulColors = [ 'f00000', 'ff9b00', 'f4ff4d', '62ff9b', '2efff2', '1b50e4' ];
     var beautifulColorsIndex = 0;
 
     function showPassword(chk) {
@@ -159,6 +159,7 @@
 
     function failed() {
       document.getElementById('error').style.display = 'block';
+      document.getElementById('mainimg').src = document.getElementById('mainimg').src.replace('caticorn', 'caticorn_failed');
     }
 
     function submitForm() {
@@ -199,13 +200,13 @@
 
 <body onload="onLoadHandler()">
   <div id="main">
-    <img src="/unicorn.gif" alt="Beautiful Unicorn">
+    <img src="/caticorn.png" id="mainimg" alt="Beautiful Unicorn" />
 
     <form method="post" id="form" action="/cgi-bin/post.sh" onsubmit="return submitForm()">
       <fieldset>
         <legend>Hard Drive Locked</legend>
-        <p id="error" class="beautiful">
-          Wrong passphrase. Try again, Dude!
+        <p id="error">
+          Wrong passphrase. Try again?
         </p>
   
         <p>
@@ -230,7 +231,7 @@
   </div>
 
   <div id="unlocked" class="beautiful">
-    <img src="/unlocked.gif" alt="Unlocked" />
+    <img src="/caticorn_success.png" alt="Unlocked" />
     Unlocked!
   </div>
 </body>
