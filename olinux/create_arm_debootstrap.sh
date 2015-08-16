@@ -278,6 +278,7 @@ EOT
       mkdir -p $TARGET_DIR/etc/initramfs-tools/root/www/cgi-bin
       cp /olinux/script/initramfs/index.html $TARGET_DIR/etc/initramfs-tools/root/www/
       cp /olinux/script/initramfs/unicorn.gif $TARGET_DIR/etc/initramfs-tools/root/www/
+      cp /olinux/script/initramfs/unlocked.gif $TARGET_DIR/etc/initramfs-tools/root/www/
       cp /olinux/script/initramfs/post.sh $TARGET_DIR/etc/initramfs-tools/root/www/cgi-bin/
       chroot_deb $TARGET_DIR "update-initramfs -u -k all"
     fi

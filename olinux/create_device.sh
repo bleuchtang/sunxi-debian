@@ -159,12 +159,12 @@ if [ "${TYPE}" = "loop" ] ; then
   umount $MNT1
   losetup -d $DEVICE
 else
-  if [ -n $ENCRYPT ] ; then
+  if [ -z $ENCRYPT ] ; then
+    umount $MNT1
+  else
     umount $MNT1/boot
     umount $MNT1
     cryptsetup luksClose olinux 
-  else
-    umount $MNT1
   fi
   if [ `file ${DEB_DIR} | grep 'DOS/MBR'` ] ; then
     umount $MNT2
