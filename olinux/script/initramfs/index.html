@@ -147,6 +147,11 @@
       document.getElementById('loader').style.display = 'inline-block';
     }
 
+    function hideLoader() {
+      document.getElementById('unlock').style.display = 'inline';
+      document.getElementById('loader').style.display = 'none';
+    }
+
     function unlocked() {
       document.getElementById('main').style.display = 'none';
       document.getElementById('unlocked').style.display = 'block';
@@ -165,6 +170,7 @@
       xmlHttp.onreadystatechange = function() {
         if(xmlHttp.readyState == 4) {
           if(xmlHttp.responseText.match(/TPL:UNLOCKED/)) {
+            hideLoader();
             failed();
 
           } else {
