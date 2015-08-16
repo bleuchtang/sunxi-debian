@@ -7,11 +7,13 @@ echo -n $(httpd -d $passphrase) > /lib/cryptsetup/passfifo
 
 for i in $(seq 10); do
   sleep 1
-  echo $i
 
-  [ -f /dev/mapper/root ] && exit 0
+  if [ -f /dev/mapper/root ]; then
+    cat ../index.html | sed '/TPL:UNLOCKED/d'
+    exit 0
+  fi
 done
 
-cat ../index.html | sed '/TPL:ERROR/d' | sed 's#unicorn\.gif#../unicorn.gif#'
+cat ../index.html | sed '/TPL:ERROR/d'
 
 exit 0
