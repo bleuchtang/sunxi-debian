@@ -55,6 +55,10 @@
     }
 
     #error {
+      display: none;
+      /* TPL:ERROR
+      display: block;
+      TPL:ERROR */
       color: #ca0000;
       font-weight: bold;
     }
@@ -74,15 +78,25 @@
       animation: spin .3s linear infinite;
     }
 
-    #unlocked {
+    #main {
+      /* TPL:UNLOCKED
       display: none;
-      font-size: 4em;
+      TPL:UNLOCKED */
+    }
+
+    #unlocked {
+      display: none; /* TPL:UNLOCKED */
+      font-size: 6em;
       font-weight: bold;
     }
 
     #unlocked img {
       display: block;
-      margin: .5em auto;
+      margin: .6em auto;
+    }
+
+    .no-js {
+      display: none;
     }
 
     @keyframes spin {
@@ -131,7 +145,11 @@
 
     function unlocked() {
       document.getElementById('main').style.display = 'none';
-      document.getElementById('unlocked').style.display = 'inline';
+      document.getElementById('unlocked').style.display = 'block';
+    }
+
+    function failed() {
+      document.getElementById('error').style.display = 'block';
     }
 
     function submitForm() {
@@ -142,12 +160,11 @@
 
       xmlHttp.onreadystatechange = function() {
         if(xmlHttp.readyState == 4) {
-          if(xmlHttp.status == 200) {
-            unlocked();
+          if(xmlHttp.responseText.match(/TPL:UNLOCKED/)) {
+            failed();
 
           } else {
-
-            alert('An error occured.');
+            unlocked();
           }
         }
       }
@@ -157,20 +174,29 @@
       return false;
     }
 
+    function onLoadHandler() {
+      beautifulCycle();
+      focusText();
+
+      var nojs = document.getElementsByClassName('no-js');
+
+      for(var i = 0; i < nojs.length; i++) {
+        nojs[i].className = nojs[i].className.replace('no-js', '');
+      }
+    }
   </script>
 </head>
 
-<body onload="beautifulCycle(); focusText()">
+<body onload="onLoadHandler()">
   <div id="main">
-    <img src="unicorn.gif" alt="Beautiful Unicorn">
+    <img src="/unicorn.gif" alt="Beautiful Unicorn">
+
     <form method="post" id="form" action="/cgi-bin/post.sh" onsubmit="return submitForm()">
       <fieldset>
         <legend>Hard Drive Locked</legend>
-        <!-- TPL:ERROR
         <p id="error" class="beautiful">
           Wrong passphrase. Try again, Dude!
         </p>
-        TPL:ERROR -->
   
         <p>
           <label for="passphrase">
@@ -180,7 +206,7 @@
   
         <input type="password" name="passphrase" id="passphrase" />
   
-        <p>
+        <p class="no-js">
           <label>
             <input type="checkbox" onclick="showPassword(this)" />
             <span>Show passphrase</span>
@@ -192,11 +218,9 @@
       <div class="loader" id="loader"></div>
     </div>
 
-    <div id="unlocked" class="beautiful">
-      <img src="unlocked.png" alt="Unlocked" />
-
-      Unlocked!
-    </div>
-  </form>
+  <div id="unlocked" class="beautiful">
+    <img src="/unlocked.gif" alt="Unlocked" />
+    Unlocked!
+  </div>
 </body>
 </html>
