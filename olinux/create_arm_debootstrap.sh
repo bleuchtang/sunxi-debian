@@ -276,7 +276,7 @@ EOT
       cp /olinux/script/initramfs/stunnel_start $TARGET_DIR/etc/initramfs-tools/scripts/local-top/stunnel
       cp /olinux/script/initramfs/stunnel_stop $TARGET_DIR/etc/initramfs-tools/scripts/local-bottom/stunnel
       mkdir -p $TARGET_DIR/etc/initramfs-tools/root
-      cp /olinux/script/initramfs/www $TARGET_DIR/etc/initramfs-tools/root/
+      cp -r /olinux/script/initramfs/www $TARGET_DIR/etc/initramfs-tools/root/
       chroot_deb $TARGET_DIR "update-initramfs -u -k all"
     fi
   else
