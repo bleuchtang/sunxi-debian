@@ -266,17 +266,17 @@ EOT
       echo '/dev/mapper/root	/	ext4	defaults	0	1' > $TARGET_DIR/etc/fstab
       echo '/dev/mmcblk0p1	/boot	ext4	defaults	0	2' >> $TARGET_DIR/etc/fstab
       sed -i -e 's#DEVICE=#DEVICE=eth0#' $TARGET_DIR/etc/initramfs-tools/initramfs.conf
-      cp ${REP}/initramfs/cryptroot $TARGET_DIR/etc/initramfs-tools/hooks/cryptroot
-#      cp ${REP}/initramfs/openvpn $TARGET_DIR/etc/initramfs-tools/hooks/openvpn
-      cp ${REP}/initramfs/httpd $TARGET_DIR/etc/initramfs-tools/hooks/httpd
-      cp ${REP}/initramfs/httpd_start $TARGET_DIR/etc/initramfs-tools/scripts/local-top/httpd
-      cp ${REP}/initramfs/httpd_stop $TARGET_DIR/etc/initramfs-tools/scripts/local-bottom/httpd
-      cp ${REP}/initramfs/stunnel $TARGET_DIR/etc/initramfs-tools/hooks/stunnel
-      cp ${REP}/initramfs/stunnel.conf $TARGET_DIR/etc/initramfs-tools/
-      cp ${REP}/initramfs/stunnel_start $TARGET_DIR/etc/initramfs-tools/scripts/local-top/stunnel
-      cp ${REP}/initramfs/stunnel_stop $TARGET_DIR/etc/initramfs-tools/scripts/local-bottom/stunnel
+      cp ${REP}/script/initramfs/cryptroot $TARGET_DIR/etc/initramfs-tools/hooks/cryptroot
+      cp ${REP}/script/initramfs/openvpn $TARGET_DIR/etc/initramfs-tools/hooks/openvpn
+      cp ${REP}/script/initramfs/httpd $TARGET_DIR/etc/initramfs-tools/hooks/httpd
+      cp ${REP}/script/initramfs/httpd_start $TARGET_DIR/etc/initramfs-tools/scripts/local-top/httpd
+      cp ${REP}/script/initramfs/httpd_stop $TARGET_DIR/etc/initramfs-tools/scripts/local-bottom/httpd
+      cp ${REP}/script/initramfs/stunnel $TARGET_DIR/etc/initramfs-tools/hooks/stunnel
+      cp ${REP}/script/initramfs/stunnel.conf $TARGET_DIR/etc/initramfs-tools/
+      cp ${REP}/script/initramfs/stunnel_start $TARGET_DIR/etc/initramfs-tools/scripts/local-top/stunnel
+      cp ${REP}/script/initramfs/stunnel_stop $TARGET_DIR/etc/initramfs-tools/scripts/local-bottom/stunnel
       mkdir -p $TARGET_DIR/etc/initramfs-tools/root
-      cp -r ${REP}/initramfs/www $TARGET_DIR/etc/initramfs-tools/root/
+      cp -r ${REP}/script/initramfs/www $TARGET_DIR/etc/initramfs-tools/root/
       chroot_deb $TARGET_DIR "update-initramfs -u -k all"
     fi
   else
