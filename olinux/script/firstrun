@@ -34,7 +34,7 @@ case "$1" in
     echo ""
     rm -f /etc/ssh/ssh_host*
     dpkg-reconfigure openssh-server 
-    # do not resize if root is crypted 
+    # do not resize partition if root is crypted 
     /sbin/insserv -r firstrun
     if [ ! -e /etc/crypttab ]; then
       echo ""
@@ -49,6 +49,8 @@ case "$1" in
       echo "##################"
       echo ""
       /sbin/reboot
+    else
+      update-initramfs -u -k all
     fi
     ;;
   *)
