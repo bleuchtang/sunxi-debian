@@ -6,6 +6,9 @@ case $BOARD in
     DTB="sun7i-a20-olinuxino-lime2.dtb"
     FLASH_KERNEL='Olimex A20-OLinuXino-LIME2'
     ;;
+  bananapi)
+    FLASH_KERNEL='LeMaker Banana Pi'
+    ;;
   a20micro)
     U_BOOT_CONFIG="A20-OLinuXino_MICRO_defconfig"
     DTB="sun7i-a20-olinuxino-micro.dtb"
