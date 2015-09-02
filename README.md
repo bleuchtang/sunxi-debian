@@ -47,16 +47,17 @@ sudo docker run --privileged -i -t -v $(pwd)/olinux/:/olinux/ debian:olinux bash
 ```
 
 Optional arguments:
-+ -d <name>  debian release (wheezy, jessie) 	(default: jessie)
-+ -b <board> olinux board (see config_board.sh) (default: a20lime)
-+ -a <packages> add packages to deboostrap
-+ -n <hostname> hostname (default: olinux)
-+ -t <target> target directory for debootstrap	(default: /olinux/debootstrap)
-+ -i (bool) install sunxi kernel files; you should have build them before.
-+ -y (bool) install yunohost (doesn't work with cross debootstrap)
-+ -c (bool) cross debootstrap
-+ -p (bool) use aptcacher proxy
-+ -e (bool) configure debootstrap for future root partition encryption
+
++  -d		debian release (wheezy, jessie) 	(default: jessie)
++  -b		olinux board (see config_board.sh) 	(default: a20lime)
++  -a		add packages to deboostrap
++  -n		hostname				(default: olinux)
++  -t		target directory for debootstrap	(default: /olinux/debootstrap)
++  -y		install yunohost (doesn't work with cross debootstrap)
++  -c		cross debootstrap
++  -p		use aptcacher proxy
++  -i		set path for kernel package or install from testing (set '-i testing' to install from debian testing)
++  -e		configure for encrypted partition	(default: false)
 
 # Install on a SD card
 
