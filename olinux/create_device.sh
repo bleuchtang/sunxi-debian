@@ -139,7 +139,7 @@ elif [ `file ${DEB_DIR} | grep 'DOS/MBR'` ] ; then
   DEVICE1=$(losetup -f)
 
   # mount image as block device
-  losetup -o 1048576 $DEVICE ${DEB_DIR}
+  losetup -o 1048576 $DEVICE1 ${DEB_DIR}
   mount ${DEVICE1} $MNT2/
   cp -ar $MNT2/* $MNT1/
 else 
