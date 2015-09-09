@@ -133,7 +133,7 @@ echo "- Copy bootstrap files"
 if [ -d ${DEB_DIR} ] ; then
   # Assume that directly the debootstrap directory
   cp -ar ${DEB_DIR}/* $MNT1/
-elif [ `file ${DEB_DIR} | grep 'DOS/MBR'` ] ; then
+elif [[ `file ${DEB_DIR} | grep 'DOS/MBR'` ]] ; then
   # Assume that is a .img file
   # find first avaliable free device
   DEVICE1=$(losetup -f)
