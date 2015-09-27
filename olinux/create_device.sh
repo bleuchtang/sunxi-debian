@@ -149,7 +149,9 @@ fi
 sync
 
 echo "- Write sunxi-with-spl"
-dd if=${UBOOT_FILE} of=${DEVICE} bs=1024 seek=8 >/dev/null 2>&1
+if [[ `file ${DEB_DIR} | grep 'DOS/MBR'` ]] ; then
+  dd if=${UBOOT_FILE} of=${DEVICE} bs=1024 seek=8 >/dev/null 2>&1
+fi	  
 sync
 
 if [ "${DEVICE}" = "img" ] ; then
