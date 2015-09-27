@@ -171,7 +171,7 @@ else
     umount $MNT1
     cryptsetup luksClose olinux 
   fi
-  if [ `file ${DEB_DIR} | grep 'DOS/MBR'` ] ; then
+  if $(file ${DEB_DIR} | grep 'DOS/MBR') ; then
     umount $MNT2
     losetup -d $DEVICE1
   fi	  

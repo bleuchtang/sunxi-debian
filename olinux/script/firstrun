@@ -1,62 +1,42 @@
 #!/bin/bash
 
-### BEGIN INIT INFO
-# Provides:          firstrun
-# Required-Start:    $all
-# Required-Stop:
-# Should-Start:
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
-# Short-Description: Script to run when first starting
-# Description:       Something needs to be done when  is
-#                    starting at first time.
-#                    regenerate ssh host key
-#                    expanding root partition 
-#                    run depmod 
-### END INIT INFO
-
-# script from https://github.com/igorpecovnik/lib
-# modified by https://github.com/bleuchtang/sunxi-debian
-
-N=/etc/init.d/firstrun
-
-case "$1" in
-  start)
-    echo ""
-    echo "##########################################"
-    echo "##         FIRSTRUN INIT SCRIPT         ##"
-    echo "## WAIT SOME MINUTES FOR CONFIGURATIONS ##"
-    echo "##########################################"
-    echo ""
-    echo "######################"
-    echo "# ssh key generation #"
-    echo "######################"
-    echo ""
-    rm -f /etc/ssh/ssh_host*
-    dpkg-reconfigure openssh-server 
-    # do not resize partition if root is crypted 
-    /sbin/insserv -r firstrun
-    if [ ! -e /etc/crypttab ]; then
-      echo ""
-      echo "############################"
-      echo "# Expanding root partition #"
-      echo "############################"
-      (echo d; echo n; echo p; echo 1; echo ; echo; echo w) | fdisk /dev/mmcblk0
-      /sbin/insserv secondrun
-      echo ""
-      echo "##################"
-      echo "#     Reboot     #"
-      echo "##################"
-      echo ""
-      /sbin/reboot
-    else
-      update-initramfs -u -k all
-    fi
-    ;;
-  *)
-    echo "Usage: $N {start}" >&2
-    exit 1
-    ;;
-esac
+echo ""
+echo "##########################################"
+echo "##         FIRSTRUN INIT SCRIPT         ##"
+echo "## WAIT SOME MINUTES FOR CONFIGURATIONS ##"
+echo "##########################################"
+echo ""
+echo "######################"
+echo "# ssh key generation #"
+echo "######################"
+echo ""
+rm -f /etc/ssh/ssh_host*
+dpkg-reconfigure openssh-server 
+/bin/systemctl disable firstrun
+if [ ! -e /etc/crypttab ]; then
+  echo ""
+  echo "############################"
+  echo "# Expanding root partition #"
+  echo "############################"
+  (echo d; echo n; echo p; echo 1; echo ; echo; echo w) | fdisk /dev/mmcblk0
+  /bin/systemctl enable secondrun
+  echo ""
+  echo "##################"
+  echo "#     reboot     #"
+  echo "##################"
+  echo ""
+  /sbin/reboot
+else
+  echo ""
+  echo "####################"
+  echo "# update initramfs #"
+  echo "####################"
+  echo ""
+  rm /etc/initramfs-tools/stunnel.{csr,key,pem}
+  echo > /etc/initramfs-tools/root/.ssh/authorized_keys
+  rm /etc/initramfs-tools/root/.ssh/id_*
+  rm /etc/initramfs-tools/etc/dropbear/dropbear_*
+  /usr/sbin/update-initramfs -u -k all
+fi
 
 exit 0
