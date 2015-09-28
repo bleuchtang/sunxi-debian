@@ -15,7 +15,7 @@ cat <<EOF
   -s		size of img in MB		 	(mandatory only for img device option)
   -t		final image name			(default: /olinux/olinux.img)
   -b		debootstrap directory, .img or tarball	(default: /olinux/debootstrap)
-  -u		uboot file				(default: /olinux/sunxi/u-boot/u-boot-sunxi-with-spl.bin)
+  -u		uboot file or board name		(default: a20lime)
   -e		encrypt partition			(default: false)
 
 EOF
@@ -26,7 +26,8 @@ TARGET=./olinux/olinux.img
 MNT1=/mnt/dest
 MNT2=/mnt/source
 DEB_DIR=./olinux/debootstrap
-UBOOT_FILE=./olinux/sunxi/u-boot/u-boot-sunxi-with-spl.bin
+UBOOT_FILE="a20lime"
+REP=$(dirname $0)
 
 while getopts ":s:d:t:b:u:e" opt; do
   case $opt in
@@ -149,7 +150,13 @@ fi
 sync
 
 echo "- Write sunxi-with-spl"
+if [[ "${UBOOT_FILE}" == *.bin ]] ; then
   dd if=${UBOOT_FILE} of=${DEVICE} bs=1024 seek=8 >/dev/null 2>&1
+else
+  BOARD=${UBOOT_FILE}
+  . ${REP}/config_board.sh
+  dd if=$MNT1/usr/lib/u-boot/${U_BOOT}/u-boot-sunxi-with-spl.bin of=${DEVICE} bs=1024 seek=8 >/dev/null 2>&1
+fi
 sync
 
 if [ "${DEVICE}" = "img" ] ; then
