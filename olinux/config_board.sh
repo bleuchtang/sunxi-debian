@@ -18,6 +18,7 @@ case $BOARD in
     DTB="sun7i-a20-olinuxino-lime.dtb"
     FLASH_KERNEL='Olimex A10-OLinuXino-LIME'
     U_BOOT='A10-OLinuXino-Lime'
+    ;;
   bananapi)
     FLASH_KERNEL='LeMaker Banana Pi'
     U_BOOT='Bananapi'
