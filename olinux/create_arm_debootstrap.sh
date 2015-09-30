@@ -248,7 +248,7 @@ EOT
     echo $FLASH_KERNEL > $TARGET_DIR/etc/flash-kernel/machine
     if [ $ENCRYPT ] ; then
       PACKAGES="stunnel dropbear busybox"
-      echo 'LINUX_KERNEL_CMDLINE="console=tty0 hdmi.audio=EDID:0 disp.screen0_output_mode=EDID:1280x720p60 root=/dev/mapper/root cryptopts=target=root,source=/dev/mmcblk0p2,cipher=aes-xts-plain64,size=256,hash=sha1 rootwait sunxi_ve_mem_reserve=0 sunxi_g2d_mem_reserve=0 sunxi_no_mali_mem_reserve sunxi_fb_mem_reserve=0 panic=10 loglevel=6 consoleblank=0"' > $TARGET_DIR/etc/default/flash-kernel
+      echo 'LINUX_KERNEL_CMDLINE="console=ttyS1 hdmi.audio=EDID:0 disp.screen0_output_mode=EDID:1280x720p60 root=/dev/mapper/root cryptopts=target=root,source=/dev/mmcblk0p2,cipher=aes-xts-plain64,size=256,hash=sha1 rootwait sunxi_ve_mem_reserve=0 sunxi_g2d_mem_reserve=0 sunxi_no_mali_mem_reserve sunxi_fb_mem_reserve=0 panic=10 loglevel=6 consoleblank=0"' > $TARGET_DIR/etc/default/flash-kernel
       echo 'aes' >> $TARGET_DIR/etc/initramfs-tools/modules
       echo 'aes_x86_64' >> $TARGET_DIR/etc/initramfs-tools/modules
       echo 'aes_generic' >> $TARGET_DIR/etc/initramfs-tools/modules
@@ -261,7 +261,7 @@ EOT
       echo 'crypto_blkcipher' >> $TARGET_DIR/etc/initramfs-tools/modules
       echo 'gf128mul' >> $TARGET_DIR/etc/initramfs-tools/modules
     else
-      echo 'LINUX_KERNEL_CMDLINE="console=tty0 hdmi.audio=EDID:0 disp.screen0_output_mode=EDID:1280x720p60 root=/dev/mmcblk0p1 rootwait sunxi_ve_mem_reserve=0 sunxi_g2d_mem_reserve=0 sunxi_no_mali_mem_reserve sunxi_fb_mem_reserve=0 panic=10 loglevel=6 consoleblank=0"' > $TARGET_DIR/etc/default/flash-kernel
+      echo 'LINUX_KERNEL_CMDLINE="console=ttyS1 hdmi.audio=EDID:0 disp.screen0_output_mode=EDID:1280x720p60 root=/dev/mmcblk0p1 rootwait sunxi_ve_mem_reserve=0 sunxi_g2d_mem_reserve=0 sunxi_no_mali_mem_reserve sunxi_fb_mem_reserve=0 panic=10 loglevel=6 consoleblank=0"' > $TARGET_DIR/etc/default/flash-kernel
     fi
     chroot_deb $TARGET_DIR "DEBIAN_FRONTEND=noninteractive $APT linux-image-armmp flash-kernel u-boot-sunxi u-boot-tools $PACKAGES"
     if [ $ENCRYPT ] ; then
