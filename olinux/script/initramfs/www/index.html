@@ -67,15 +67,20 @@
       cursor: pointer;
     }
 
-    .loader {
-      content: "";
+    #loader {
       display: none;
-      width: 0;
-      height: 0;
-      border: solid 25px;
-      border-radius: 5em;
-      border-color: #ff619c #8f9cff #f6ff60 #67ff00 ;
-      animation: spin .3s linear infinite;
+      width: 400px;
+      height: 20px;
+      background-color: #9f7ca2;
+      border-radius: 5px;
+      margin: 0 auto;
+    }
+
+    #loader div {
+      height: 20px;
+      background-color: #9f7ca2;
+      animation: bgdisco .5s ease infinite;
+      border-radius: 5px;
     }
 
     #main {
@@ -99,13 +104,59 @@
       display: none;
     }
 
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
+    .beautiful {
+      animation: disco .5s ease infinite;
+    }
+
+    @keyframes disco {
+      6% {
+        color: #f00000;
       }
 
-      100% {
-        transform: rotate(360deg);
+      22% {
+        color: #ff9b00;
+      }
+
+      38% {
+        color: #f4ff4d;
+      }
+
+      54% {
+        color: #62ff9b;
+      }
+
+      86% {
+        color: #2efff2;
+      }
+
+      90% {
+        color: #1b50e4;
+      }
+    }
+
+    @keyframes bgdisco {
+      6% {
+        background-color: #f00000;
+      }
+
+      22% {
+        background-color: #ff9b00;
+      }
+
+      38% {
+        background-color: #f4ff4d;
+      }
+
+      54% {
+        background-color: #62ff9b;
+      }
+
+      86% {
+        background-color: #2efff2;
+      }
+
+      90% {
+        background-color: #1b50e4;
       }
     }
 
@@ -115,9 +166,6 @@
   </style>
 
   <script>
-    var beautifulColors = [ 'f00000', 'ff9b00', 'f4ff4d', '62ff9b', '2efff2', '1b50e4' ];
-    var beautifulColorsIndex = 0;
-
     function showPassword(chk) {
       var pwd = document.getElementById('passphrase');
       pwd.type = chk.checked ? 'text' : 'password';
@@ -128,23 +176,22 @@
       pwd.focus();
     }
 
-    function beautifulCycle() {
-      if(document.getElementsByClassName('beautiful')) {
-        setInterval(function () {
-          var beautifuls = document.getElementsByClassName('beautiful');
+    function progressLoader() {
+      var pc = parseInt(document.getElementById('progress').style.width.replace('%', '')) + 5;
+      document.getElementById('progress').style.width = pc + "%";
 
-          for(var i = 0; i < beautifuls.length; i++) {
-            beautifuls[i].style.color = '#' + beautifulColors[beautifulColorsIndex];
-          }
-
-          beautifulColorsIndex = (beautifulColorsIndex + 1) % beautifulColors.length;
-        }, 100);
+      if(pc < 100) {
+        setTimeout(progressLoader, 1000);
       }
     }
 
     function showLoader() {
+      document.getElementById('itsgone').play();
+
       document.getElementById('unlock').style.display = 'none';
-      document.getElementById('loader').style.display = 'inline-block';
+      document.getElementById('loader').style.display = 'block';
+
+      setTimeout(progressLoader, 1000);
     }
 
     function hideLoader() {
@@ -153,11 +200,14 @@
     }
 
     function unlocked() {
+      document.getElementById('itworks').play();
       document.getElementById('main').style.display = 'none';
       document.getElementById('unlocked').style.display = 'block';
     }
 
     function failed() {
+      document.getElementById('doesnwork').play();
+      document.getElementById('progress').style.width = "0%";
       document.getElementById('error').style.display = 'block';
       document.getElementById('mainimg').src = document.getElementById('mainimg').src.replace('caticorn', 'caticorn_failed');
     }
@@ -186,8 +236,10 @@
     }
 
     function onLoadHandler() {
-      beautifulCycle();
       focusText();
+
+      var preloadSuccessImg = new Image();
+      preloadSuccessImg.src = '/img/caticorn_success.png';
 
       var nojs = document.getElementsByClassName('no-js');
 
@@ -200,7 +252,7 @@
 
 <body onload="onLoadHandler()">
   <div id="main">
-    <img src="/caticorn.png" id="mainimg" alt="Beautiful Unicorn" />
+    <img src="/img/caticorn.png" id="mainimg" alt="Beautiful Unicorn" />
 
     <form method="post" id="form" action="/cgi-bin/post.sh" onsubmit="return submitForm()">
       <fieldset>
@@ -225,14 +277,21 @@
         </p>
       </fieldset>
   
-      <input type="submit" id="unlock" value="Unlock" onclick="showLoader()" />
-      <div class="loader" id="loader"></div>
+      <input type="submit" id="unlock" value="Unlock" />
+
+      <div id="loader">
+        <div id="progress" style="width: 0%"> </div>
+      </div>
     </form>
   </div>
 
   <div id="unlocked" class="beautiful">
-    <img src="/caticorn_success.png" alt="Unlocked" />
+    <img src="/img/caticorn_success.png" alt="Unlocked" />
     Unlocked!
   </div>
+
+  <audio id="itsgone" preload><source src="img/itsgone.ogg" type="audio/ogg"></audio>
+  <audio id="itworks" preload><source src="img/itworks.ogg" type="audio/ogg"></audio>
+  <audio id="doesnwork" preload><source src="img/doesntwork.ogg" type="audio/ogg"></audio>
 </body>
 </html>
