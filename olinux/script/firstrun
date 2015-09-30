@@ -6,12 +6,12 @@ echo "##         FIRSTRUN INIT SCRIPT         ##"
 echo "## WAIT SOME MINUTES FOR CONFIGURATIONS ##"
 echo "##########################################"
 echo ""
-echo "######################"
-echo "# ssh key generation #"
-echo "######################"
+echo "##################"
+echo "# update ssh key #"
+echo "##################"
 echo ""
 rm -f /etc/ssh/ssh_host*
-dpkg-reconfigure openssh-server 
+/usr/sbin/dpkg-reconfigure openssh-server 
 /bin/systemctl disable firstrun
 if [ ! -e /etc/crypttab ]; then
   echo ""
@@ -27,6 +27,13 @@ if [ ! -e /etc/crypttab ]; then
   echo ""
   /sbin/reboot
 else
+  echo ""
+  echo "############################"
+  echo "# update dropbear ssh keys #"
+  echo "############################"
+  echo ""
+  rm /etc/dropbear/dropbear_*
+  /usr/sbin/dpkg-reconfigure dropbear
   echo ""
   echo "####################"
   echo "# update initramfs #"
