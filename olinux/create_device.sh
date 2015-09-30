@@ -101,7 +101,7 @@ else
   parted --script $DEVICE align-check optimal 1
 fi
 
-if [ "${TYPE}" = "loop" ] ; then
+if [[ "${TYPE}" == "loop" || "${DEVICE}" =~ mmcblk[0-9] ]] ; then
   DEVICEP1=${DEVICE}p1
 else
   DEVICEP1=${DEVICE}1
@@ -119,7 +119,11 @@ if [ -z $ENCRYPT ] ; then
   # mount image to already prepared mount point
   mount -t ext4 $DEVICEP1 $MNT1
 else
-  DEVICEP2=${DEVICE}2
+  if [[ "${DEVICE}" =~ mmcblk[0-9] ]] ; then
+    DEVICEP2=${DEVICE}p2
+  else
+    DEVICEP2=${DEVICE}2
+  fi
   cryptsetup -y -v luksFormat $DEVICEP2
   cryptsetup luksOpen $DEVICEP2 olinux
   mkfs.ext4 /dev/mapper/olinux >/dev/null 2>&1
