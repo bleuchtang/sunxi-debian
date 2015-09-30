@@ -214,22 +214,22 @@
     function submitForm() {
       showLoader();
 
-      //var xmlHttp = new XMLHttpRequest();
-      //xmlHttp.open('POST', document.getElementById('form').action, true);
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open('POST', document.getElementById('form').action, true);
 
-      //xmlHttp.onreadystatechange = function() {
-      //  if(xmlHttp.readyState == 4) {
-      //    if(xmlHttp.responseText.match(/TPL:UNLOCKED/)) {
-      //      hideLoader();
-      //      failed();
+      xmlHttp.onreadystatechange = function() {
+        if(xmlHttp.readyState == 4) {
+          if(xmlHttp.responseText.match(/TPL:UNLOCKED/)) {
+            hideLoader();
+            failed();
 
-      //    } else {
-      //      unlocked();
-      //    }
-      //  }
-      //}
+          } else {
+            unlocked();
+          }
+        }
+      }
 
-      //xmlHttp.send('passphrase=' + document.getElementById('passphrase').value);
+      xmlHttp.send('passphrase=' + document.getElementById('passphrase').value);
 
       return false;
     }
