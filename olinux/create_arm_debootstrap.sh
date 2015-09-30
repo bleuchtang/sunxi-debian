@@ -216,7 +216,7 @@ chroot_deb $TARGET_DIR "/bin/systemctl enable firstrun >> /dev/null"
 if [ $INSTALL_YUNOHOST ] ; then
   chroot_deb $TARGET_DIR "$APT git"
   chroot_deb $TARGET_DIR "git clone https://github.com/YunoHost/install_script /tmp/install_script"
-  chroot_deb $TARGET_DIR "cd /tmp/install_script && ./autoinstall_yunohostv2"
+  chroot_deb $TARGET_DIR "cd /tmp/install_script && ./install_yunohostv2 -a"
 fi
 
 if [ $INSTALL_KERNEL ] ; then
