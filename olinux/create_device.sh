@@ -119,6 +119,35 @@ mkfs.ext4 $DEVICEP1 >/dev/null 2>&1
 # tune filesystem
 tune2fs -o journal_data_writeback $DEVICEP1 >/dev/null 2>&1
 
+finish() {
+  echo "- Umount"
+  if [ "${TYPE}" = "loop" ] ; then
+    if [[ $(mountpoint $MNT1) ]] ; then 
+      umount $MNT1
+      losetup -d $DEVICE
+    fi
+  else
+    if [ -z $ENCRYPT ] ; then
+      if [[ $(mountpoint $MNT1) ]] ; then
+        umount $MNT1
+      fi
+    else
+      if [[ $(mountpoint $MNT1) ]] ; then
+        umount $MNT1/boot
+        umount $MNT1
+        cryptsetup luksClose olinux 
+      fi
+      if [[ "${DEB_DIR}" =~ \.img$ ]] ; then
+        if [[ $(mountpoint $MNT2) ]] ; then 
+          umount $MNT2
+          losetup -d $DEVICE1
+        fi
+      fi	  
+    fi
+  fi
+}
+trap finish EXIT
+
 if [ -z $ENCRYPT ] ; then
   echo "- Mount filesystem"
   # mount image to already prepared mount point
@@ -143,7 +172,7 @@ echo "- Copy bootstrap files"
 if [ -d ${DEB_DIR} ] ; then
   # Assume that directly the debootstrap directory
   cp -ar ${DEB_DIR}/* $MNT1/
-elif [[ `file ${DEB_DIR} | grep 'DOS/MBR'` ]] ; then
+elif [[ "${DEB_DIR}" =~ \.img$ ]] ; then
   # Assume that is a .img file
   # find first avaliable free device
   DEVICE1=$(losetup -f)
@@ -152,9 +181,6 @@ elif [[ `file ${DEB_DIR} | grep 'DOS/MBR'` ]] ; then
   losetup -o 1048576 $DEVICE1 ${DEB_DIR}
   mount ${DEVICE1} $MNT2/
   cp -ar $MNT2/* $MNT1/
-else 
-  # Assume that is a tarball file
-  tar --same-owner --preserve-permissions -xvf ${DEB_DIR} -C $MNT1/ .
 fi
 sync
 
@@ -168,27 +194,7 @@ else
 fi
 sync
 
-if [ "${DEVICE}" = "img" ] ; then
+if [[ "${DEVICE}" == "img" || "${TYPE}" = "loop" ]] ; then
   echo "- Sfill"
   sfill -z -l -l -f $MNT
-fi
-
-echo "- Umount"
-if [ "${TYPE}" = "loop" ] ; then
-  echo "- Sfill"
-  sfill -z -l -l -f $MNT1
-  umount $MNT1
-  losetup -d $DEVICE
-else
-  if [ -z $ENCRYPT ] ; then
-    umount $MNT1
-  else
-    umount $MNT1/boot
-    umount $MNT1
-    cryptsetup luksClose olinux 
-  fi
-  if [[ `file ${DEB_DIR} | grep 'DOS/MBR'` ]] ; then
-    umount $MNT2
-    losetup -d $DEVICE1
-  fi	  
 fi
