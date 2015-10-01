@@ -122,23 +122,23 @@ tune2fs -o journal_data_writeback $DEVICEP1 >/dev/null 2>&1
 finish() {
   echo "- Umount"
   if [ "${TYPE}" = "loop" ] ; then
-    if [[ $(mountpoint $MNT1) ]] ; then 
+    if mountpoint $MNT1 ; then 
       umount $MNT1
       losetup -d $DEVICE
     fi
   else
     if [ -z $ENCRYPT ] ; then
-      if [[ $(mountpoint $MNT1) ]] ; then
+      if mountpoint $MNT1 ; then
         umount $MNT1
       fi
     else
-      if [[ $(mountpoint $MNT1) ]] ; then
+      if mountpoint $MNT1 ; then
         umount $MNT1/boot
         umount $MNT1
         cryptsetup luksClose olinux 
       fi
       if [[ "${DEB_DIR}" =~ \.img$ ]] ; then
-        if [[ $(mountpoint $MNT2) ]] ; then 
+        if mountpoint $MNT2 ; then 
           umount $MNT2
           losetup -d $DEVICE1
         fi
