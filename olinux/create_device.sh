@@ -55,6 +55,11 @@ while getopts ":s:d:t:b:u:e" opt; do
   esac
 done
 
+if [ ! -r "${DEB_DIR}" ]; then
+  echo "[ERR] Cannot read ${DEB_DIR}" >&2
+  exit 1
+fi
+
 if [ -z $DEVICE ] ; then
   show_usage
 fi
